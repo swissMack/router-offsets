@@ -1,5 +1,5 @@
 /* Router Offsets PWA — cache-first service worker */
-const CACHE = "router-offsets-v1";
+const CACHE = "router-offsets-v2";
 const ASSETS = [
   "./",
   "./index.html",

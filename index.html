@@ -30,52 +30,68 @@
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
   @media(max-width:860px){.grid2{grid-template-columns:1fr}}
   label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin:10px 0 3px;text-transform:uppercase;letter-spacing:.4px}
-  select,input[type=number]{width:100%;padding:8px 10px;font-size:15px;border:1px solid var(--line);border-radius:8px;background:#fff}
+  select,input[type=number],input[type=text]{width:100%;padding:8px 10px;font-size:15px;border:1px solid var(--line);border-radius:8px;background:#fff}
   .row{display:flex;gap:10px}
   .row>div{flex:1}
+  .row .narrow{flex:0 0 84px}
   .result{margin-top:14px;padding:14px;border-radius:10px;background:#eef7f3;border:1px solid #cde6dc;font-size:15px}
   .result .big{font-size:26px;font-weight:700;color:var(--accent)}
   .result.bad{background:#fdeeec;border-color:#f3c4bd;color:var(--warn)}
   .formula{font-family:ui-monospace,Consolas,monospace;font-size:13px;color:var(--muted);margin-top:6px}
+  .tipline{margin-top:10px;padding-top:10px;border-top:1px dashed #cde6dc;font-size:13.5px;color:#3c5a50}
+  .tablewrap{overflow-x:auto}
   table{border-collapse:collapse;width:100%;font-size:13px}
   th,td{border:1px solid var(--line);padding:4px 6px;text-align:center;min-width:34px}
   th{background:#e8efe9}
-  td.bushcol{background:#dff0f5;font-weight:600}
+  td.bushcol{background:#dff0f5;font-weight:600;white-space:nowrap}
   td.imp{background:var(--grey);color:#666}
-  td.p8{background:var(--blue)} td.p9{background:var(--orange)} td.p10{background:var(--purple)}
+  td.p0{background:var(--blue)} td.p1{background:var(--orange)} td.p2{background:var(--purple)}
+  td.dim{opacity:.32}
   td.sel{outline:3px solid var(--accent2);outline-offset:-3px;font-weight:700}
   td.clickable{cursor:pointer}
   td.clickable:hover{background:var(--hl)}
-  td.imp.clickable:hover{background:#bbb}
   .tables-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
   @media(max-width:860px){.tables-grid{grid-template-columns:1fr}}
   .tbl-card h3{margin:0 0 2px;font-size:14px;color:var(--ink)}
   .tbl-card .cap{font-size:12px;color:var(--muted);margin:0 0 8px}
   .legend{display:flex;flex-wrap:wrap;gap:14px;margin:12px 0 4px;font-size:12.5px;align-items:center}
   .chip{display:inline-block;width:16px;height:16px;border-radius:4px;vertical-align:middle;margin-right:5px;border:1px solid rgba(0,0,0,.15)}
-  .toggle{display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:10px;user-select:none;cursor:pointer}
+  .toggle{display:flex;align-items:center;gap:8px;font-size:13px;margin:6px 0;user-select:none;cursor:pointer}
   .cellinfo{margin-top:12px;padding:10px 14px;background:#fbf7ec;border:1px dashed var(--accent2);border-radius:8px;font-size:13.5px;display:none}
   .pairs td{min-width:0;padding:6px 8px}
   .pairs th{background:#efe6f7}
-  button{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:14px;font-weight:600;cursor:pointer;margin-top:12px}
+  button{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:14px;font-weight:600;cursor:pointer}
   button:hover{background:#0c6a52}
+  button.ghost{background:#fff;color:var(--accent);border:1px solid var(--accent)}
   .note{font-size:12px;color:var(--muted);margin-top:8px}
   footer{text-align:center;font-size:12.5px;color:var(--muted);padding:10px 20px 30px}
   svg text{font-family:inherit}
   .badge{display:inline-block;background:var(--hl);border-radius:6px;padding:1px 8px;font-weight:700}
+  .kitgrid{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px}
+  .kitgrid label{display:inline-flex;align-items:center;gap:5px;margin:0;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;font-size:13px;text-transform:none;letter-spacing:0;font-weight:500;color:var(--ink);cursor:pointer}
+  .kitgrid label.on{background:#e2f2ec;border-color:var(--accent)}
+  .setuplist{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .setup-chip{display:inline-flex;align-items:center;gap:8px;background:#f0ebf8;border:1px solid #cbb3ec;border-radius:20px;padding:6px 12px;font-size:13.5px;cursor:pointer}
+  .setup-chip:hover{background:#e4daf4}
+  .setup-chip .del{color:var(--warn);font-weight:700;cursor:pointer;padding:0 2px}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:4px 0}
+  .seg button{background:#fff;color:var(--ink);border:none;border-radius:0;padding:7px 14px;font-size:13px;font-weight:600}
+  .seg button.on{background:var(--accent);color:#fff}
+  .mode-radio{display:flex;gap:16px;font-size:13.5px;margin:8px 0 2px;flex-wrap:wrap}
+  .mode-radio label{display:flex;align-items:center;gap:6px;margin:0;text-transform:none;letter-spacing:0;font-weight:500;color:var(--ink);font-size:13.5px;cursor:pointer}
 </style>
 </head>
 <body>
 <header>
   <h1>Template Routing Offsets — Interactive Reference</h1>
-  <p>Guide bush &amp; cutter offset calculator, tables and inlay pair finder · Metric (mm) · Based on “Router Offset Tables” © Peter Parfitt 2026</p>
+  <p>Guide bush &amp; cutter offset calculator, tables and inlay pair finder · mm &amp; inches · Based on “Router Offset Tables” © Peter Parfitt 2026</p>
 </header>
 <main>
 
 <!-- ============ CALCULATOR ============ -->
 <div class="card">
   <h2>1 · Offset Calculator</h2>
-  <p class="sub">Choose your scenario and hardware — the offset, resulting size and diagram update live.</p>
+  <p class="sub">Choose your scenario and hardware — everything updates live. Metric and imperial kit can be mixed.</p>
   <div class="grid2">
     <div>
       <label>Scenario</label>
@@ -87,38 +103,84 @@
       </select>
       <div class="row">
         <div>
-          <label>Guide bush Ø (mm)</label>
+          <label>Guide bush Ø</label>
           <select id="bushSel"></select>
-          <input type="number" id="bushCustom" placeholder="Custom bush Ø" step="0.1" min="1" style="display:none;margin-top:6px">
+          <div class="row" id="bushCustomRow" style="display:none;margin-top:6px">
+            <div><input type="number" id="bushCustom" placeholder="Custom Ø" step="0.01" min="0.1"></div>
+            <div class="narrow"><select id="bushCustomU"><option value="mm">mm</option><option value="in">in</option></select></div>
+          </div>
         </div>
         <div>
-          <label>Cutter Ø (mm)</label>
+          <label>Cutter Ø</label>
           <select id="cutterSel"></select>
-          <input type="number" id="cutterCustom" placeholder="Custom cutter Ø" step="0.1" min="1" style="display:none;margin-top:6px">
+          <div class="row" id="cutterCustomRow" style="display:none;margin-top:6px">
+            <div><input type="number" id="cutterCustom" placeholder="Custom Ø" step="0.01" min="0.1"></div>
+            <div class="narrow"><select id="cutterCustomU"><option value="mm">mm</option><option value="in">in</option></select></div>
+          </div>
         </div>
       </div>
-      <label>Template opening / disc Ø (mm) — optional</label>
-      <input type="number" id="templateD" value="60" step="0.5" min="1">
+      <div class="mode-radio">
+        <label><input type="radio" name="mode" value="fwd" checked> I have a template → size the result</label>
+        <label><input type="radio" name="mode" value="rev"> I want a result → size the template</label>
+      </div>
+      <div class="row">
+        <div>
+          <label id="dimLabel">Template opening / disc Ø</label>
+          <input type="number" id="templateD" value="60" step="0.1" min="0.1">
+        </div>
+        <div class="narrow">
+          <label>Unit</label>
+          <select id="templateU"><option value="mm">mm</option><option value="in">in</option></select>
+        </div>
+        <div>
+          <label>Cut depth (optional)</label>
+          <input type="number" id="depthD" placeholder="e.g. 12" step="0.1" min="0">
+        </div>
+        <div class="narrow">
+          <label>Unit</label>
+          <select id="depthU"><option value="mm">mm</option><option value="in">in</option></select>
+        </div>
+      </div>
       <div id="calcResult" class="result"></div>
+      <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap">
+        <button id="saveSetup">★ Save this setup</button>
+      </div>
     </div>
     <div>
       <svg id="diagram" viewBox="0 0 460 300" width="100%" aria-label="Cross-section diagram"></svg>
       <p class="note" id="diagNote"></p>
+      <div class="setuplist" id="setupList"></div>
     </div>
   </div>
 </div>
 
+<!-- ============ MY KIT ============ -->
+<div class="card">
+  <h2>2 · My Kit</h2>
+  <p class="sub">Tick the guide bushes and cutters you actually own. Turn on the filter to hide everything else in the calculator, tables and inlay finder. Saved in this browser — works offline.</p>
+  <label class="toggle"><input type="checkbox" id="kitFilter"> <b>Only show my kit</b></label>
+  <label>Guide bushes</label>
+  <div class="kitgrid" id="kitBushes"></div>
+  <label>Cutters</label>
+  <div class="kitgrid" id="kitCutters"></div>
+  <button class="ghost" id="kitClear">Clear kit</button>
+</div>
+
 <!-- ============ INLAY FINDER ============ -->
 <div class="card">
-  <h2>2 · Inlay Pair Finder</h2>
+  <h2>3 · Inlay Pair Finder</h2>
   <p class="sub">For inlay work the hole and the plug are cut from the <b>same template</b> and their offsets must be <b>equal</b>. The hole uses offset (B−C)/2, the plug uses (B+C)/2 — so you need two different setups that give the same offset.</p>
-  <div class="row" style="max-width:520px">
+  <div class="row" style="max-width:640px">
     <div>
-      <label>Template Ø (mm)</label>
-      <input type="number" id="inlayTemplate" value="60" step="0.5" min="1">
+      <label>Template Ø</label>
+      <input type="number" id="inlayTemplate" value="60" step="0.1" min="0.1">
+    </div>
+    <div class="narrow">
+      <label>Unit</label>
+      <select id="inlayU"><option value="mm">mm</option><option value="in">in</option></select>
     </div>
     <div>
-      <label>Target offset (mm)</label>
+      <label>Target offset</label>
       <select id="inlayOffset"></select>
     </div>
   </div>
@@ -127,27 +189,28 @@
 
 <!-- ============ TABLES ============ -->
 <div class="card">
-  <h2>3 · The Four Offset Tables</h2>
-  <p class="sub">Rows = guide bush Ø, columns = cutter Ø, cells = offset in mm. Click any cell to see the working and load it into the calculator.</p>
-  <label class="toggle"><input type="checkbox" id="inlayToggle" checked> Highlight inlay offset pairs (8 / 9 / 10 mm) in the two female-template tables</label>
-  <div class="legend">
-    <span><span class="chip" style="background:var(--grey)"></span>Impossible — cutter too large for the guide bush</span>
-    <span><span class="chip" style="background:var(--blue)"></span>8 mm inlay pair</span>
-    <span><span class="chip" style="background:var(--orange)"></span>9 mm inlay pair</span>
-    <span><span class="chip" style="background:var(--purple)"></span>10 mm inlay pair</span>
+  <h2>4 · The Four Offset Tables</h2>
+  <p class="sub">Rows = guide bush Ø, columns = cutter Ø, cells = offset. Click any cell to see the working and load it into the calculator.</p>
+  <div class="seg" id="unitSeg">
+    <button data-u="m" class="on">Metric chart</button>
+    <button data-u="i">Imperial chart</button>
   </div>
+  <label class="toggle"><input type="checkbox" id="inlayToggle" checked> Highlight inlay offset pairs in the two female-template tables</label>
+  <div class="legend" id="legendBox"></div>
   <div class="tables-grid" id="tablesGrid"></div>
   <div class="cellinfo" id="cellInfo"></div>
 </div>
 
 <!-- ============ EXPLAINER ============ -->
 <div class="card">
-  <h2>4 · How the maths works</h2>
+  <h2>5 · How the maths works</h2>
   <p style="font-size:14px">The guide bush rides against the template edge while the cutter spins inside it. The cut line is therefore offset from the template edge. Only two formulas exist:</p>
   <ul style="font-size:14px">
     <li><b>Offset = (Bush − Cutter) / 2</b> — when the piece you keep is on the same side as the bush (female→hole, male→plug).</li>
     <li><b>Offset = (Bush + Cutter) / 2</b> — when the cutter works beyond the bush footprint (female→plug, male→hole).</li>
   </ul>
+  <p style="font-size:14px"><b>Corners:</b> a round cutter can't cut a sharp internal corner — the minimum internal corner radius equals the cutter radius. Likewise the round bush can't follow template corners tighter than the bush radius, so give your templates corner radii of at least half the bush diameter.</p>
+  <p style="font-size:14px"><b>Depth of cut:</b> rule of thumb — don't take more than about half the cutter diameter per pass in hardwood (a full diameter in soft material with a sharp cutter). The calculator suggests a pass count when you enter a cut depth.</p>
   <p style="font-size:14px"><b>Worked example (from the source chart):</b> a 60&nbsp;mm circular template with an 8&nbsp;mm offset pair. Hole: 8&nbsp;mm cutter + 24&nbsp;mm bush → offset (24−8)/2 = <span class="badge">8</span> → hole Ø = 60 − 2×8 = <b>44&nbsp;mm</b>. Plug: 6&nbsp;mm cutter + 10&nbsp;mm bush → offset (10+6)/2 = <span class="badge">8</span> → plug Ø = 60 − 2×8 = <b>44&nbsp;mm</b>. A perfect-fit inlay.</p>
 </div>
 
@@ -158,84 +221,134 @@
 
 <script>
 "use strict";
-const BUSHES=[10,12,14,16,18,20,24,30];
-const CUTTERS=[4,5,6,7,8,10,12];
+/* ================= sizes ================= */
+const mm2in=25.4;
+const M=(v)=>({id:"m"+v, mm:v, label:v+" mm", sys:"m"});
+const I=(n,d)=>({id:"i"+n+"-"+d, mm:mm2in*n/d, label:(d===1?n+"″":n+"/"+d+"″"), sys:"i"});
+const BUSHES=[ [10,12,14,16,18,20,24,30].map(M), [I(5,16),I(3,8),I(7,16),I(1,2),I(5,8),I(3,4),I(1,1)] ];
+const CUTTERS=[ [4,5,6,7,8,10,12].map(M), [I(1,8),I(3,16),I(1,4),I(5,16),I(3,8),I(1,2),I(5,8),I(3,4)] ];
+const ALL_BUSH=[...BUSHES[0],...BUSHES[1]], ALL_CUT=[...CUTTERS[0],...CUTTERS[1]];
+const byId=(arr,id)=>arr.find(x=>x.id===id);
+
 const SCEN={
-  femHole:{name:"Female template → Hole", diff:true,  sign:-1, piece:"Hole", rel:"smaller than template",
-    f:"(B − C) / 2", res:(t,o)=>t-2*o, resF:"Template − 2×offset"},
-  femPlug:{name:"Female template → Plug", diff:false, sign:-1, piece:"Plug", rel:"smaller than template",
-    f:"(B + C) / 2", res:(t,o)=>t-2*o, resF:"Template − 2×offset"},
-  maleHole:{name:"Male template → Hole",  diff:false, sign:+1, piece:"Hole", rel:"bigger than template",
-    f:"(B + C) / 2", res:(t,o)=>t+2*o, resF:"Template + 2×offset"},
-  malePlug:{name:"Male template → Plug",  diff:true,  sign:+1, piece:"Plug", rel:"bigger than template",
-    f:"(B − C) / 2", res:(t,o)=>t+2*o, resF:"Template + 2×offset"}
+  femHole:{name:"Female template → Hole", diff:true,  sign:-1, piece:"Hole", rel:"smaller than template", f:"(B − C) / 2"},
+  femPlug:{name:"Female template → Plug", diff:false, sign:-1, piece:"Plug", rel:"smaller than template", f:"(B + C) / 2"},
+  maleHole:{name:"Male template → Hole",  diff:false, sign:+1, piece:"Hole", rel:"bigger than template",  f:"(B + C) / 2"},
+  malePlug:{name:"Male template → Plug",  diff:true,  sign:+1, piece:"Plug", rel:"bigger than template",  f:"(B − C) / 2"}
 };
-const impossible=(b,c)=>(b-c)<=2;           // cutter must clear the bush bore (matches grey cells in source)
-const offset=(key,b,c)=>SCEN[key].diff?(b-c)/2:(b+c)/2;
-const fmt=n=>Number.isInteger(n)?n:+n.toFixed(2);
+const impossible=(b,c)=>(b-c)<=2;                 // cutter must clear the bush bore
+const offsetMM=(key,b,c)=>SCEN[key].diff?(b-c)/2:(b+c)/2;
 
-/* ---------- calculator ---------- */
+/* ================= formatting ================= */
+const fmtN=n=>Math.round(n*100)/100;
+function fracIn(mmv){
+  const inches=mmv/mm2in;
+  let n=Math.round(inches*64), d=64;
+  const approx=Math.abs(inches-n/64)>0.0005?"≈ ":"";
+  if(n===0)return "0″";
+  while(n%2===0&&d>1){n/=2;d/=2;}
+  const w=Math.floor(n/d); n-=w*d;
+  return approx+(w?w+(n?" ":""):"")+(n?n+"/"+d:"")+"″";
+}
+const both=mmv=>`${fmtN(mmv)} mm · ${fracIn(mmv)}`;
+const toMM=(v,u)=>u==="in"?v*mm2in:v;
+
+/* ================= storage ================= */
+const store={
+  get k(){try{return JSON.parse(localStorage.getItem("kit")||"[]")}catch(e){return[]}},
+  set k(v){localStorage.setItem("kit",JSON.stringify(v))},
+  get s(){try{return JSON.parse(localStorage.getItem("setups")||"[]")}catch(e){return[]}},
+  set s(v){localStorage.setItem("setups",JSON.stringify(v))},
+  get f(){return localStorage.getItem("kitFilter")==="1"},
+  set f(v){localStorage.setItem("kitFilter",v?"1":"0")}
+};
+
+/* ================= helpers ================= */
 const $=id=>document.getElementById(id);
-function fillSelect(sel,vals,unit){
-  sel.innerHTML=vals.map(v=>`<option value="${v}">${v} ${unit}</option>`).join("")+`<option value="custom">Custom…</option>`;
+function kitHas(id){return store.k.includes(id);}
+function kitActive(cat){ // filter only if enabled AND at least one item of that category ticked
+  if(!store.f)return false;
+  const arr=cat==="b"?ALL_BUSH:ALL_CUT;
+  return arr.some(x=>kitHas(x.id));
 }
-fillSelect($("bushSel"),BUSHES,"mm");
-fillSelect($("cutterSel"),CUTTERS,"mm");
-$("bushSel").value=24; $("cutterSel").value=8;
+function visible(cat,item){return kitActive(cat)?kitHas(item.id):true;}
 
-function getVal(selId,custId){
-  const s=$(selId);
-  if(s.value==="custom"){$(custId).style.display="block";return parseFloat($(custId).value)||NaN;}
-  $(custId).style.display="none";return parseFloat(s.value);
+/* ================= selects ================= */
+function fillSizeSelect(sel,cat){
+  const sets=cat==="b"?BUSHES:CUTTERS;
+  const cur=sel.value;
+  const grp=(name,arr)=>{
+    const items=arr.filter(x=>visible(cat,x));
+    if(!items.length)return"";
+    return `<optgroup label="${name}">`+items.map(x=>`<option value="${x.id}">${x.label}</option>`).join("")+`</optgroup>`;
+  };
+  sel.innerHTML=grp("Metric",sets[0])+grp("Imperial",sets[1])+`<option value="custom">Custom…</option>`;
+  if(cur&&[...sel.options].some(o=>o.value===cur))sel.value=cur;
 }
-function calc(){
-  const key=$("scenario").value, S=SCEN[key];
-  const B=getVal("bushSel","bushCustom"), C=getVal("cutterSel","cutterCustom");
-  const T=parseFloat($("templateD").value);
-  const out=$("calcResult");
-  if(isNaN(B)||isNaN(C)){out.className="result";out.innerHTML="Enter bush and cutter diameters.";drawDiagram(key,20,8,null);return;}
-  if(impossible(B,C)){
-    out.className="result bad";
-    out.innerHTML=`⚠ <b>Impossible combination</b> — a ${fmt(C)} mm cutter cannot pass through a ${fmt(B)} mm guide bush (the bore is smaller than the outside diameter). Choose a larger bush or smaller cutter.`;
-    drawDiagram(key,B,C,null);return;
+function sizeVal(selId,rowId,numId,uId,cat){
+  const sel=$(selId);
+  if(sel.value==="custom"){
+    $(rowId).style.display="flex";
+    return {mm:toMM(parseFloat($(numId).value),$(uId).value)||NaN};
   }
-  const o=offset(key,B,C);
-  let html=`<div>Offset: <span class="big">${fmt(o)} mm</span></div>
-    <div class="formula">offset = ${S.f} = (${fmt(B)} ${S.diff?"−":"+"} ${fmt(C)}) / 2</div>`;
-  if(!isNaN(T)&&T>0){
-    const r=S.res(T,o);
-    html+= r>0
-      ? `<div style="margin-top:8px">${S.piece} Ø: <b>${fmt(r)} mm</b> <span style="color:var(--muted)">(${S.piece.toLowerCase()} is ${S.rel})</span></div>
-         <div class="formula">${S.piece} = ${S.resF} = ${fmt(T)} ${S.sign<0?"−":"+"} 2×${fmt(o)}</div>`
-      : `<div style="margin-top:8px;color:var(--warn)">Template too small — the offset consumes the whole opening.</div>`;
+  $(rowId).style.display="none";
+  const item=byId(cat==="b"?ALL_BUSH:ALL_CUT,sel.value);
+  return item?{mm:item.mm}:{mm:NaN};
+}
+
+/* ================= calculator ================= */
+function mode(){return document.querySelector('input[name=mode]:checked').value;}
+function calc(){
+  const key=$("scenario").value,S=SCEN[key];
+  const B=sizeVal("bushSel","bushCustomRow","bushCustom","bushCustomU","b");
+  const C=sizeVal("cutterSel","cutterCustomRow","cutterCustom","cutterCustomU","c");
+  const dimMM=toMM(parseFloat($("templateD").value),$("templateU").value);
+  const depMM=toMM(parseFloat($("depthD").value),$("depthU").value);
+  const out=$("calcResult");
+  $("dimLabel").textContent=mode()==="fwd"?"Template opening / disc Ø":("Target "+S.piece.toLowerCase()+" Ø");
+  if(isNaN(B.mm)||isNaN(C.mm)){out.className="result";out.innerHTML="Enter bush and cutter diameters.";drawDiagram(key,20,8,null);return;}
+  if(impossible(B.mm,C.mm)){
+    out.className="result bad";
+    out.innerHTML=`⚠ <b>Impossible combination</b> — a ${both(C.mm)} cutter cannot pass through a ${both(B.mm)} guide bush. Choose a larger bush or smaller cutter.`;
+    drawDiagram(key,B.mm,C.mm,null);return;
+  }
+  const o=offsetMM(key,B.mm,C.mm);
+  let html=`<div>Offset: <span class="big">${fmtN(o)} mm</span> <span style="color:var(--muted)">(${fracIn(o)})</span></div>
+    <div class="formula">offset = ${S.f} = (${fmtN(B.mm)} ${S.diff?"−":"+"} ${fmtN(C.mm)}) / 2 mm</div>`;
+  if(!isNaN(dimMM)&&dimMM>0){
+    if(mode()==="fwd"){
+      const r=dimMM+S.sign*2*o;
+      html+= r>0
+        ? `<div style="margin-top:8px">${S.piece} Ø: <b>${both(r)}</b> <span style="color:var(--muted)">(${S.rel})</span></div>
+           <div class="formula">${S.piece} = Template ${S.sign<0?"−":"+"} 2×offset = ${fmtN(dimMM)} ${S.sign<0?"−":"+"} 2×${fmtN(o)} mm</div>`
+        : `<div style="margin-top:8px;color:var(--warn)">Template too small — the offset consumes the whole opening.</div>`;
+    }else{
+      const t=dimMM-S.sign*2*o;
+      html+= t>0
+        ? `<div style="margin-top:8px">Make the template: <b>${both(t)}</b></div>
+           <div class="formula">Template = ${S.piece} ${S.sign<0?"+":"−"} 2×offset = ${fmtN(dimMM)} ${S.sign<0?"+":"−"} 2×${fmtN(o)} mm</div>`
+        : `<div style="margin-top:8px;color:var(--warn)">Not achievable — this setup's offset is too large for that target size.</div>`;
+    }
+  }
+  html+=`<div class="tipline">↳ <b>Corners:</b> internal corners of the cut will have a radius of at least <b>${both(C.mm/2)}</b> (cutter radius). Template internal corners tighter than <b>${both(B.mm/2)}</b> radius won't be followed by the bush.</div>`;
+  if(!isNaN(depMM)&&depMM>0){
+    const per=C.mm/2, n=Math.max(1,Math.ceil(depMM/per));
+    html+=`<div class="tipline">↳ <b>Depth:</b> ${both(depMM)} deep with a ${both(C.mm)} cutter → <b>${n} pass${n>1?"es":""}</b> of ${both(depMM/n)} (rule of thumb: ≤ half the cutter Ø per pass in hardwood).</div>`;
   }
   out.className="result";out.innerHTML=html;
-  drawDiagram(key,B,C,o);
+  drawDiagram(key,B.mm,C.mm,o);
 }
-["scenario","bushSel","cutterSel","bushCustom","cutterCustom","templateD"].forEach(id=>$(id).addEventListener("input",calc));
 
-/* ---------- diagram ---------- */
+/* ================= diagram ================= */
 function drawDiagram(key,B,C,o){
-  const S=SCEN[key], svg=$("diagram");
-  const cx=230, scale=3.2;
-  const bw=Math.min(B,34)*scale, cw=Math.min(C,30)*scale;
-  const female=key.startsWith("fem");
-  // template edges: female = opening (material outside), male = disc (material inside)
-  const cutX = female ? cx-bw/2 + (S.diff? cw/2 : -cw/2)   // bush rides inside opening's left edge
-                      : cx+bw/2 + (S.diff? -cw/2 : cw/2);  // bush rides outside disc's right edge — simplified: keep one edge
-  // simpler: always show LEFT template edge at ex; bush centred so its rim touches edge
-  const ex=cx-70;
-  let bushCX, dir; // dir = side of the edge the cutter axis sits
-  if(female){ bushCX=ex+bw/2; } else { bushCX=ex-bw/2; }
-  const cutCX=bushCX;
-  const cutL=cutCX-cw/2, cutR=cutCX+cw/2;
-  const offPx=(o!=null&&o>=0)?o*scale:0;
-  const w=(x)=>x.toFixed(1);
-  let s="";
-  // workpiece
+  const S=SCEN[key],svg=$("diagram");
+  const scale=3.2,bw=Math.min(B,34)*scale,cw=Math.min(C,30)*scale;
+  const female=key.startsWith("fem"),ex=160;
+  const bushCX=female?ex+bw/2:ex-bw/2;
+  const cutL=bushCX-cw/2,cutR=bushCX+cw/2;
+  const w=x=>x.toFixed(1);let s="";
   s+=`<rect x="20" y="205" width="420" height="55" fill="#e7cf9f" stroke="#a98d55"/>`;
   s+=`<text x="30" y="238" font-size="13" fill="#7a5c1e">Workpiece</text>`;
-  // template layer (y 165-205). Female: material left of edge... we show material on the side the bush does NOT enter?
   if(female){
     s+=`<rect x="20" y="165" width="${w(ex-20)}" height="40" fill="#9fd8e8" stroke="#4a93a8"/>`;
     s+=`<text x="30" y="190" font-size="13" fill="#245e6e">Template</text>`;
@@ -243,26 +356,20 @@ function drawDiagram(key,B,C,o){
     s+=`<rect x="${w(ex)}" y="165" width="${w(440-ex)}" height="40" fill="#9fd8e8" stroke="#4a93a8"/>`;
     s+=`<text x="${w(ex+12)}" y="190" font-size="13" fill="#245e6e">Template</text>`;
   }
-  // router base
   s+=`<rect x="${w(bushCX-90)}" y="40" width="180" height="30" rx="6" fill="#2f8f7a" stroke="#1e6b5a"/>`;
   s+=`<text x="${w(bushCX)}" y="60" font-size="14" fill="#fff" text-anchor="middle" font-weight="bold">ROUTER</text>`;
-  // bush
   s+=`<rect x="${w(bushCX-bw/2)}" y="70" width="${w(bw)}" height="100" fill="#8d8d8d" stroke="#5a5a5a"/>`;
   s+=`<rect x="${w(bushCX-bw/2+6)}" y="70" width="${w(Math.max(bw-12,2))}" height="100" fill="#bdbdbd"/>`;
-  // cutter
   s+=`<rect x="${w(cutL)}" y="70" width="${w(cw)}" height="190" fill="#8c4bbf" stroke="#5d2f85"/>`;
-  // cut slot in workpiece
   s+=`<rect x="${w(cutL)}" y="205" width="${w(cw)}" height="55" fill="#fff" stroke="#8c4bbf" stroke-dasharray="4 3"/>`;
-  // template edge marker
   s+=`<line x1="${w(ex)}" y1="160" x2="${w(ex)}" y2="270" stroke="#4a93a8" stroke-dasharray="5 4"/>`;
-  // offset dimension: from template edge to the KEPT edge of the cut
   if(o!=null&&o>=0){
-    const keptX = S.diff ? (female? cutL : cutR) : (female? cutR : cutL);
-    const x1=Math.min(ex,keptX), x2=Math.max(ex,keptX);
+    const keptX=S.diff?(female?cutL:cutR):(female?cutR:cutL);
+    const x1=Math.min(ex,keptX),x2=Math.max(ex,keptX);
     s+=`<line x1="${w(keptX)}" y1="260" x2="${w(keptX)}" y2="285" stroke="#c0392b"/>`;
     s+=`<line x1="${w(ex)}" y1="260" x2="${w(ex)}" y2="285" stroke="#c0392b"/>`;
     s+=`<line x1="${w(x1)}" y1="280" x2="${w(x2)}" y2="280" stroke="#c0392b" marker-start="url(#a1)" marker-end="url(#a2)"/>`;
-    s+=`<text x="${w((x1+x2)/2)}" y="296" font-size="13" fill="#c0392b" text-anchor="middle">offset ${fmt(o)} mm</text>`;
+    s+=`<text x="${w((x1+x2)/2)}" y="296" font-size="13" fill="#c0392b" text-anchor="middle">offset ${fmtN(o)} mm</text>`;
   }
   svg.innerHTML=`<defs>
     <marker id="a1" markerWidth="8" markerHeight="8" refX="1" refY="3" orient="auto"><path d="M7,0 L1,3 L7,6" fill="none" stroke="#c0392b"/></marker>
@@ -271,86 +378,184 @@ function drawDiagram(key,B,C,o){
   $("diagNote").textContent=`${S.name}: the guide bush (grey) rides the template edge; the cutter (purple) cuts offset from it. The ${S.piece.toLowerCase()} ends up ${S.rel}.`;
 }
 
-/* ---------- tables ---------- */
+/* ================= my kit ================= */
+function renderKit(){
+  const grid=(el,arr)=>{
+    el.innerHTML=arr.map(x=>`<label class="${kitHas(x.id)?"on":""}"><input type="checkbox" data-id="${x.id}" ${kitHas(x.id)?"checked":""}>${x.label}</label>`).join("");
+  };
+  grid($("kitBushes"),ALL_BUSH);grid($("kitCutters"),ALL_CUT);
+  $("kitFilter").checked=store.f;
+}
+document.addEventListener("change",e=>{
+  const cb=e.target.closest('.kitgrid input');if(!cb)return;
+  let k=store.k;
+  if(cb.checked){if(!k.includes(cb.dataset.id))k.push(cb.dataset.id);}
+  else k=k.filter(x=>x!==cb.dataset.id);
+  store.k=k;renderKit();refreshAll();
+});
+$("kitFilter").addEventListener("change",()=>{store.f=$("kitFilter").checked;refreshAll();});
+$("kitClear").addEventListener("click",()=>{if(confirm("Clear all kit selections?")){store.k=[];renderKit();refreshAll();}});
+
+/* ================= named setups ================= */
+function renderSetups(){
+  const s=store.s;
+  $("setupList").innerHTML=s.length
+    ? s.map((x,i)=>`<span class="setup-chip" data-i="${i}" title="Load this setup">★ ${x.name}<span class="del" data-del="${i}" title="Delete">×</span></span>`).join("")
+    : `<span class="note">No saved setups yet — configure the calculator and hit “Save this setup”.</span>`;
+}
+$("saveSetup").addEventListener("click",()=>{
+  const name=prompt("Name this setup (e.g. “Hinge recess jig”):");
+  if(!name)return;
+  const s=store.s;
+  s.push({name,scenario:$("scenario").value,bush:$("bushSel").value,cutter:$("cutterSel").value,
+    bushC:$("bushCustom").value,bushCU:$("bushCustomU").value,cutC:$("cutterCustom").value,cutCU:$("cutterCustomU").value,
+    dim:$("templateD").value,dimU:$("templateU").value,depth:$("depthD").value,depthU:$("depthU").value,mode:mode()});
+  store.s=s;renderSetups();
+});
+$("setupList").addEventListener("click",e=>{
+  const del=e.target.closest("[data-del]");
+  if(del){const i=+del.dataset.del,s=store.s;
+    if(confirm(`Delete setup “${s[i].name}”?`)){s.splice(i,1);store.s=s;renderSetups();}
+    e.stopPropagation();return;}
+  const chip=e.target.closest(".setup-chip");if(!chip)return;
+  const x=store.s[+chip.dataset.i];if(!x)return;
+  $("scenario").value=x.scenario;
+  fillSizeSelect($("bushSel"),"b");fillSizeSelect($("cutterSel"),"c");
+  $("bushSel").value=[...$("bushSel").options].some(o=>o.value===x.bush)?x.bush:"custom";
+  $("cutterSel").value=[...$("cutterSel").options].some(o=>o.value===x.cutter)?x.cutter:"custom";
+  $("bushCustom").value=x.bushC;$("bushCustomU").value=x.bushCU;
+  $("cutterCustom").value=x.cutC;$("cutterCustomU").value=x.cutCU;
+  $("templateD").value=x.dim;$("templateU").value=x.dimU;
+  $("depthD").value=x.depth;$("depthU").value=x.depthU;
+  document.querySelector(`input[name=mode][value=${x.mode}]`).checked=true;
+  calc();window.scrollTo({top:0,behavior:"smooth"});
+});
+
+/* ================= tables ================= */
+let tableUnit="m";
 const TABLE_DEFS=[
   {key:"femHole", title:"Female template → HOLE", cap:"Hole is SMALLER than template · offset = (B−C)/2 · Hole Ø = Template − 2×offset"},
   {key:"femPlug", title:"Female template → PLUG", cap:"Plug is SMALLER than template · offset = (B+C)/2 · Plug Ø = Template − 2×offset"},
   {key:"maleHole",title:"Male template → HOLE",  cap:"Hole is BIGGER than template · offset = (B+C)/2 · Hole Ø = Template + 2×offset"},
   {key:"malePlug",title:"Male template → PLUG",  cap:"Plug is BIGGER than template · offset = (B−C)/2 · Plug Ø = Template + 2×offset"}
 ];
+function pairOffsets(unit){ // offsets achievable by BOTH (B−C)/2 and (B+C)/2 within a unit set
+  const bs=BUSHES[unit==="m"?0:1],cs=CUTTERS[unit==="m"?0:1],holes={},plugs={};
+  bs.forEach(b=>cs.forEach(c=>{
+    if(impossible(b.mm,c.mm))return;
+    const kd=((b.mm-c.mm)/2).toFixed(4),ks=((b.mm+c.mm)/2).toFixed(4);
+    (holes[kd]=holes[kd]||[]).push([b,c]);(plugs[ks]=plugs[ks]||[]).push([b,c]);
+  }));
+  return Object.keys(holes).filter(o=>plugs[o])
+    .map(o=>({mm:+o,holes:holes[o],plugs:plugs[o],count:holes[o].length+plugs[o].length}))
+    .sort((a,b)=>a.mm-b.mm);
+}
+function topPairs(unit){ // 3 most versatile pair-offsets get the highlight colours
+  return pairOffsets(unit).slice().sort((a,b)=>b.count-a.count).slice(0,3).map(p=>+p.mm.toFixed(4));
+}
 function buildTables(){
-  const hl=$("inlayToggle").checked;
+  const u=tableUnit,bs=BUSHES[u==="m"?0:1],cs=CUTTERS[u==="m"?0:1];
+  const hl=$("inlayToggle").checked,tops=topPairs(u);
+  const kb=kitActive("b"),kc=kitActive("c");
+  $("legendBox").innerHTML=
+    `<span><span class="chip" style="background:var(--grey)"></span>Impossible — cutter too large for the guide bush</span>`+
+    tops.map((t,i)=>`<span><span class="chip" style="background:var(--${["blue","orange","purple"][i]})"></span>${u==="m"?fmtN(t)+" mm":fracIn(t)} inlay pair</span>`).join("")+
+    (kb||kc?`<span><span class="chip" style="background:#fff;opacity:.35;border:1px solid #999"></span>Dimmed = not in my kit</span>`:"");
   $("tablesGrid").innerHTML=TABLE_DEFS.map(def=>{
-    let rows=BUSHES.map(b=>{
-      const cells=CUTTERS.map(c=>{
-        const imp=impossible(b,c), o=offset(def.key,b,c);
+    const rows=bs.map(b=>{
+      const cells=cs.map(c=>{
+        const imp=impossible(b.mm,c.mm),o=offsetMM(def.key,b.mm,c.mm);
         let cls=imp?"imp":"";
         if(hl&&!imp&&(def.key==="femHole"||def.key==="femPlug")){
-          if(o===8)cls+=" p8"; else if(o===9)cls+=" p9"; else if(o===10)cls+=" p10";
+          const ix=tops.indexOf(+o.toFixed(4));if(ix>-1)cls+=" p"+ix;
         }
-        return `<td class="${cls} clickable" data-k="${def.key}" data-b="${b}" data-c="${c}">${fmt(o)}</td>`;
+        if((kb&&!kitHas(b.id))||(kc&&!kitHas(c.id)))cls+=" dim";
+        const disp=u==="m"?fmtN(o):fracIn(o).replace("″","");
+        return `<td class="${cls} clickable" data-k="${def.key}" data-b="${b.id}" data-c="${c.id}">${disp}</td>`;
       }).join("");
-      return `<tr><td class="bushcol">${b}</td>${cells}</tr>`;
+      return `<tr><td class="bushcol">${b.label}</td>${cells}</tr>`;
     }).join("");
     return `<div class="tbl-card"><h3>${def.title}</h3><p class="cap">${def.cap}</p>
-      <table><tr><th>Bush \\ Cutter</th>${CUTTERS.map(c=>`<th>${c}</th>`).join("")}</tr>${rows}</table></div>`;
+      <div class="tablewrap"><table><tr><th>Bush \\ Cutter</th>${cs.map(c=>`<th>${c.label}</th>`).join("")}</tr>${rows}</table></div></div>`;
   }).join("");
 }
 $("inlayToggle").addEventListener("change",buildTables);
+$("unitSeg").addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  tableUnit=b.dataset.u;
+  [...$("unitSeg").children].forEach(x=>x.classList.toggle("on",x===b));
+  buildTables();renderInlayOptions();renderInlay();
+});
 document.addEventListener("click",e=>{
-  const td=e.target.closest("td.clickable"); if(!td)return;
+  const td=e.target.closest("td.clickable");if(!td)return;
   document.querySelectorAll("td.sel").forEach(x=>x.classList.remove("sel"));
   td.classList.add("sel");
-  const k=td.dataset.k,b=+td.dataset.b,c=+td.dataset.c,S=SCEN[k];
-  const info=$("cellInfo"); info.style.display="block";
-  if(impossible(b,c)){
-    info.innerHTML=`<b>${S.name}</b> — bush ${b} mm, cutter ${c} mm: <b style="color:var(--warn)">impossible</b>. The cutter cannot pass through this guide bush.`;
+  const k=td.dataset.k,b=byId(ALL_BUSH,td.dataset.b),c=byId(ALL_CUT,td.dataset.c),S=SCEN[k];
+  const info=$("cellInfo");info.style.display="block";
+  if(impossible(b.mm,c.mm)){
+    info.innerHTML=`<b>${S.name}</b> — bush ${b.label}, cutter ${c.label}: <b style="color:var(--warn)">impossible</b>. The cutter cannot pass through this guide bush.`;
   }else{
-    const o=offset(k,b,c);
-    info.innerHTML=`<b>${S.name}</b> — bush ${b} mm, cutter ${c} mm → offset = ${S.f} = (${b} ${S.diff?"−":"+"} ${c})/2 = <b>${fmt(o)} mm</b>. Result: ${S.piece} Ø = ${S.resF}. <i>Loaded into the calculator above.</i>`;
-    $("scenario").value=k; $("bushSel").value=String(b); $("cutterSel").value=String(c); calc();
+    const o=offsetMM(k,b.mm,c.mm);
+    info.innerHTML=`<b>${S.name}</b> — bush ${b.label}, cutter ${c.label} → offset = ${S.f} = <b>${both(o)}</b>. <i>Loaded into the calculator above.</i>`;
+    $("scenario").value=k;
+    fillSizeSelect($("bushSel"),"b");fillSizeSelect($("cutterSel"),"c");
+    if([...$("bushSel").options].some(x=>x.value===b.id))$("bushSel").value=b.id;
+    if([...$("cutterSel").options].some(x=>x.value===c.id))$("cutterSel").value=c.id;
+    calc();
   }
 });
 
-/* ---------- inlay finder ---------- */
-function inlayCombos(){
-  // all achievable offsets for hole ((B-C)/2) and plug ((B+C)/2) with standard sizes
-  const holes={},plugs={};
-  BUSHES.forEach(b=>CUTTERS.forEach(c=>{
-    if(impossible(b,c))return;
-    const oh=(b-c)/2, op=(b+c)/2;
-    (holes[oh]=holes[oh]||[]).push([b,c]);
-    (plugs[op]=plugs[op]||[]).push([b,c]);
-  }));
-  return Object.keys(holes).filter(o=>plugs[o]).map(Number).sort((a,b)=>a-b)
-    .map(o=>({o,holes:holes[o],plugs:plugs[o]}));
+/* ================= inlay finder ================= */
+function inlayPairsFiltered(){
+  const kb=kitActive("b"),kc=kitActive("c");
+  const inKit=([b,c])=>(!kb||kitHas(b.id))&&(!kc||kitHas(c.id));
+  return pairOffsets(tableUnit).map(p=>({...p,holes:p.holes.filter(inKit),plugs:p.plugs.filter(inKit)}))
+    .filter(p=>p.holes.length&&p.plugs.length);
 }
-const PAIRS=inlayCombos();
-$("inlayOffset").innerHTML=PAIRS.map(p=>`<option value="${p.o}">${fmt(p.o)} mm</option>`).join("");
-$("inlayOffset").value="8";
+function renderInlayOptions(){
+  const pairs=inlayPairsFiltered();
+  const cur=$("inlayOffset").value;
+  $("inlayOffset").innerHTML=pairs.length
+    ? pairs.map(p=>`<option value="${p.mm}">${tableUnit==="m"?fmtN(p.mm)+" mm":fracIn(p.mm)}</option>`).join("")
+    : `<option value="">— none with current kit —</option>`;
+  if(cur&&[...$("inlayOffset").options].some(o=>o.value===cur))$("inlayOffset").value=cur;
+}
 function renderInlay(){
   const o=parseFloat($("inlayOffset").value);
-  const T=parseFloat($("inlayTemplate").value);
-  const p=PAIRS.find(x=>x.o===o); if(!p)return;
+  const T=toMM(parseFloat($("inlayTemplate").value),$("inlayU").value);
+  const box=$("inlayResult");
+  const p=inlayPairsFiltered().find(x=>Math.abs(x.mm-o)<0.001);
+  if(!p){box.innerHTML=`<p class="note">No matching hole+plug offset pairs — widen your kit selection or switch the chart units above.</p>`;return;}
   const size=(!isNaN(T)&&T>2*o)?T-2*o:null;
-  const li=a=>a.map(([b,c])=>`<tr><td>${b} mm</td><td>${c} mm</td></tr>`).join("");
-  $("inlayResult").innerHTML=`
-    ${size!==null?`<p style="font-size:15px">With a <b>${fmt(T)} mm</b> template and a <b>${fmt(o)} mm</b> offset, both hole and plug come out at <b style="color:var(--accent);font-size:18px">${fmt(size)} mm Ø</b> — a perfect-fit inlay.</p>`
-      :`<p style="color:var(--warn)">Template must be larger than ${fmt(2*o)} mm for this offset.</p>`}
+  const li=a=>a.map(([b,c])=>`<tr><td>${b.label}</td><td>${c.label}</td></tr>`).join("");
+  box.innerHTML=`
+    ${size!==null?`<p style="font-size:15px">With a <b>${both(T)}</b> template and a <b>${both(o)}</b> offset, both hole and plug come out at <b style="color:var(--accent);font-size:18px">${both(size)}</b> — a perfect-fit inlay.</p>`
+      :`<p style="color:var(--warn)">Template must be larger than ${both(2*o)} for this offset.</p>`}
     <div class="grid2">
-      <div><h3 style="margin:6px 0;font-size:14px">Hole setups — offset = (B−C)/2 = ${fmt(o)}</h3>
+      <div><h3 style="margin:6px 0;font-size:14px">Hole setups — offset = (B−C)/2</h3>
         <table class="pairs"><tr><th>Guide bush</th><th>Cutter</th></tr>${li(p.holes)}</table></div>
-      <div><h3 style="margin:6px 0;font-size:14px">Plug setups — offset = (B+C)/2 = ${fmt(o)}</h3>
+      <div><h3 style="margin:6px 0;font-size:14px">Plug setups — offset = (B+C)/2</h3>
         <table class="pairs"><tr><th>Guide bush</th><th>Cutter</th></tr>${li(p.plugs)}</table></div>
     </div>
     <p class="note">Pick one setup from each column. Ideally choose a pair sharing the same cutter or the same bush so you only swap one part between cuts.</p>`;
 }
-["inlayOffset","inlayTemplate"].forEach(id=>$(id).addEventListener("input",renderInlay));
+["inlayOffset","inlayTemplate","inlayU"].forEach(id=>$(id).addEventListener("input",renderInlay));
 
-buildTables(); calc(); renderInlay();
-</script>
-<script>
-if ("serviceWorker" in navigator) { navigator.serviceWorker.register("./sw.js"); }
+/* ================= wiring ================= */
+function refreshAll(){
+  fillSizeSelect($("bushSel"),"b");fillSizeSelect($("cutterSel"),"c");
+  buildTables();renderInlayOptions();renderInlay();calc();
+}
+["scenario","bushSel","cutterSel","bushCustom","cutterCustom","bushCustomU","cutterCustomU","templateD","templateU","depthD","depthU"]
+  .forEach(id=>$(id).addEventListener("input",calc));
+document.querySelectorAll('input[name=mode]').forEach(r=>r.addEventListener("change",calc));
+
+renderKit();renderSetups();
+fillSizeSelect($("bushSel"),"b");fillSizeSelect($("cutterSel"),"c");
+$("bushSel").value="m24";$("cutterSel").value="m8";
+buildTables();renderInlayOptions();renderInlay();calc();
+
+if("serviceWorker" in navigator){navigator.serviceWorker.register("./sw.js");}
 </script>
 </body>
 </html>
