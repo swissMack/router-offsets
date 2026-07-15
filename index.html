@@ -30,7 +30,7 @@
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
   @media(max-width:860px){.grid2{grid-template-columns:1fr}}
   label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin:10px 0 3px;text-transform:uppercase;letter-spacing:.4px}
-  select,input[type=number],input[type=text]{width:100%;padding:8px 10px;font-size:15px;border:1px solid var(--line);border-radius:8px;background:#fff}
+  select,input[type=number],input[type=text]{width:100%;padding:8px 10px;font-size:16px;border:1px solid var(--line);border-radius:8px;background:#fff}
   .row{display:flex;gap:10px}
   .row>div{flex:1}
   .row .narrow{flex:0 0 84px}
@@ -79,6 +79,47 @@
   .seg button.on{background:var(--accent);color:#fff}
   .mode-radio{display:flex;gap:16px;font-size:13.5px;margin:8px 0 2px;flex-wrap:wrap}
   .mode-radio label{display:flex;align-items:center;gap:6px;margin:0;text-transform:none;letter-spacing:0;font-weight:500;color:var(--ink);font-size:13.5px;cursor:pointer}
+  .scrollhint{display:none;font-size:11.5px;color:var(--muted);margin:2px 0 4px}
+
+  /* ============ mobile pass ============ */
+  @media(max-width:600px){
+    header{padding:calc(14px + env(safe-area-inset-top)) 16px 14px}
+    header h1{font-size:19px}
+    header p{font-size:12px}
+    main{padding:12px}
+    .card{padding:14px;border-radius:10px;margin-bottom:16px}
+    h2{font-size:17px}
+    /* inputs: comfortable thumb targets */
+    select,input[type=number],input[type=text]{padding:12px;border-radius:10px}
+    button{padding:13px 18px;width:100%;font-size:16px}
+    button.ghost{width:auto}
+    .row{flex-wrap:wrap}
+    .row>div{flex:1 1 100%}
+    .row .narrow{flex:1 1 30%}
+    .row>div:has(#templateD),.row>div:has(#depthD),.row>div:has(#inlayTemplate){flex:1 1 62%}
+    .row>div:has(#bushSel),.row>div:has(#cutterSel){flex:1 1 100%}
+    .mode-radio{flex-direction:column;gap:10px;margin:12px 0 4px}
+    .mode-radio label{font-size:15px;min-height:28px}
+    .mode-radio input{width:20px;height:20px}
+    /* tables: touch-sized cells, sticky bush column, swipe hint */
+    th,td{padding:10px 8px;font-size:14px;min-width:46px}
+    td.bushcol,tr>th:first-child{position:sticky;left:0;z-index:1;box-shadow:2px 0 3px rgba(0,0,0,.08)}
+    tr>th:first-child{background:#e8efe9}
+    .scrollhint{display:block}
+    /* kit chips: bigger tap targets */
+    .kitgrid label{padding:11px 14px;font-size:15px;border-radius:10px}
+    .kitgrid input{width:18px;height:18px}
+    .toggle{font-size:15px;min-height:32px}
+    .toggle input{width:20px;height:20px}
+    .setup-chip{padding:10px 16px;font-size:15px}
+    .setup-chip .del{padding:0 6px;font-size:18px}
+    .seg{width:100%;display:flex}
+    .seg button{flex:1;padding:12px 8px;width:auto}
+    .legend{gap:8px;font-size:12px}
+    .result{font-size:14.5px}
+    .result .big{font-size:23px}
+    .cellinfo{font-size:14px}
+  }
 </style>
 </head>
 <body>
@@ -476,6 +517,7 @@ function buildTables(){
       return `<tr><td class="bushcol">${b.label}</td>${cells}</tr>`;
     }).join("");
     return `<div class="tbl-card"><h3>${def.title}</h3><p class="cap">${def.cap}</p>
+      <p class="scrollhint">↔ swipe sideways to see all cutters</p>
       <div class="tablewrap"><table><tr><th>Bush \\ Cutter</th>${cs.map(c=>`<th>${c.label}</th>`).join("")}</tr>${rows}</table></div></div>`;
   }).join("");
 }
