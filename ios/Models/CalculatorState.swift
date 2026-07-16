@@ -4,8 +4,6 @@ import Observation
 @Observable
 final class CalculatorState {
     var scenario: Scenario = .femHole
-    var bush: Double = 24
-    var cutter: Double = 8
     var template: Double = 60
     var selectedTab: Int = 0
 
@@ -29,7 +27,19 @@ final class CalculatorState {
 
     func load(scenario: Scenario, bush: Double, cutter: Double) {
         self.scenario = scenario
-        self.bush = bush
-        self.cutter = cutter
+        if let b = Catalog.allBushes.first(where: { $0.mm == bush }) {
+            bushChoice = .standard(id: b.id)
+        } else {
+            bushChoice = .custom
+            bushCustom = bush
+            bushCustomUnit = .metric
+        }
+        if let c = Catalog.allCutters.first(where: { $0.mm == cutter }) {
+            cutterChoice = .standard(id: c.id)
+        } else {
+            cutterChoice = .custom
+            cutterCustom = cutter
+            cutterCustomUnit = .metric
+        }
     }
 }
