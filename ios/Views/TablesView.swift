@@ -15,7 +15,7 @@ struct TablesView: View {
         @Bindable var appModel = appModel
         List {
             Section {
-                Picker("Units", selection: $appModel.tableUnit) {
+                Picker("Units", selection: $appModel.units) {
                     Text("Metric chart").tag(UnitSystem.metric)
                     Text("Imperial chart").tag(UnitSystem.imperial)
                 }
@@ -35,11 +35,11 @@ struct TablesView: View {
         .navigationTitle("Offset Tables")
     }
 
-    private var tops: [Double] { topPairs(appModel.tableUnit) }
+    private var tops: [Double] { topPairs(appModel.units) }
 
     @ViewBuilder
     private var legend: some View {
-        let unit = appModel.tableUnit
+        let unit = appModel.units
         VStack(alignment: .leading, spacing: 4) {
             legendChip(color: Color(hex: "c9c9c9"), text: "Impossible — cutter too large for the guide bush")
             ForEach(Array(tops.enumerated()), id: \.offset) { i, t in
@@ -64,7 +64,7 @@ struct TablesView: View {
 
     @ViewBuilder
     private func table(for scenario: Scenario) -> some View {
-        let unit = appModel.tableUnit
+        let unit = appModel.units
         let idx = unit == .metric ? 0 : 1
         let bs = Catalog.bushes[idx]
         let cs = Catalog.cutters[idx]

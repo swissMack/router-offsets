@@ -9,6 +9,14 @@ struct KitView: View {
     var body: some View {
         @Bindable var appModel = appModel
         Form {
+            Section("Units") {
+                Picker("Units", selection: $appModel.units) {
+                    Text("Metric").tag(UnitSystem.metric)
+                    Text("Imperial").tag(UnitSystem.imperial)
+                }
+                .pickerStyle(.segmented)
+            }
+
             Section {
                 Toggle("Only show my kit", isOn: $appModel.kitFilterEnabled)
             } footer: {

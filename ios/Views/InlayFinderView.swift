@@ -13,7 +13,7 @@ struct InlayFinderView: View {
         func inKit(_ s: SizePair) -> Bool {
             (!kb || appModel.kit.contains(s.bush.id)) && (!kc || appModel.kit.contains(s.cutter.id))
         }
-        return pairOffsets(appModel.tableUnit).compactMap { p -> InlayPairV2? in
+        return pairOffsets(appModel.units).compactMap { p -> InlayPairV2? in
             let holes = p.holes.filter(inKit)
             let plugs = p.plugs.filter(inKit)
             guard !holes.isEmpty, !plugs.isEmpty else { return nil }
@@ -42,10 +42,10 @@ struct InlayFinderView: View {
                 }
                 Picker("Target offset", selection: $selectedOffset) {
                     ForEach(pairs) { p in
-                        Text(appModel.tableUnit == .metric ? "\(fmtN(p.mm)) mm" : fracIn(p.mm)).tag(p.mm)
+                        Text(appModel.units == .metric ? "\(fmtN(p.mm)) mm" : fracIn(p.mm)).tag(p.mm)
                     }
                 }
-                .onChange(of: appModel.tableUnit) { _, _ in syncSelectedOffset() }
+                .onChange(of: appModel.units) { _, _ in syncSelectedOffset() }
                 .onChange(of: appModel.kit) { _, _ in syncSelectedOffset() }
                 .onChange(of: appModel.kitFilterEnabled) { _, _ in syncSelectedOffset() }
                 .onAppear { syncSelectedOffset() }

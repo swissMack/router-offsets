@@ -20,7 +20,9 @@ struct SavedSetup: Codable, Identifiable {
 
 @Observable
 final class AppModel {
-    var tableUnit: UnitSystem = .metric
+    var units: UnitSystem = UnitSystem(rawValue: UserDefaults.standard.string(forKey: "units") ?? "m") ?? .metric {
+        didSet { UserDefaults.standard.set(units.rawValue, forKey: "units") }
+    }
 
     var kit: Set<String> = AppModel.loadKit() { didSet { Self.save(Array(kit), "kit") } }
     var kitFilterEnabled: Bool = UserDefaults.standard.bool(forKey: "kitFilter") {
