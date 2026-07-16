@@ -56,6 +56,16 @@ struct CalculatorView: View {
                     }
                 }
             }
+
+            Section("Cross-section") {
+                DiagramView(scenario: state.scenario,
+                            bush: state.bush,
+                            cutter: state.cutter,
+                            offset: isImpossible ? nil : offset)
+                    .padding(.vertical, 4)
+                Text("\(state.scenario.name): the guide bush (grey) rides the template edge; the cutter (purple) cuts offset from it. The \(state.scenario.piece.lowercased()) ends up \(state.scenario.rel).")
+                    .font(.footnote).foregroundStyle(.secondary)
+            }
         }
         .navigationTitle("Calculator")
     }
