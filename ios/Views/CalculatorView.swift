@@ -22,6 +22,15 @@ struct CalculatorView: View {
         appModel.units == .metric ? "\(fmtN(mm)) mm" : fracIn(mm)
     }
 
+    private func convertNumericFields() {
+        let u = appModel.units
+        state.template   = round2(fromMM(toMM(state.template,   state.templateUnit),    u))
+        state.depth      = round2(fromMM(toMM(state.depth,      state.depthUnit),        u))
+        state.bushCustom = round2(fromMM(toMM(state.bushCustom, state.bushCustomUnit),   u))
+        state.cutterCustom = round2(fromMM(toMM(state.cutterCustom, state.cutterCustomUnit), u))
+    }
+    private func round2(_ v: Double) -> Double { (v * 100).rounded() / 100 }
+
     private func syncUnits() {
         state.templateUnit = appModel.units
         state.depthUnit = appModel.units
@@ -100,7 +109,7 @@ struct CalculatorView: View {
 
             Section("Cross-section") {
                 DiagramView(scenario: state.scenario, bush: bushMM ?? 20, cutter: cutterMM ?? 8,
-                            offset: isImpossible ? nil : offset)
+                            offset: isImpossible ? nil : offset, unit: appModel.units)
                     .padding(.vertical, 4)
                 Text("\(state.scenario.name): the guide bush (grey) rides the template edge; the cutter (purple) cuts offset from it. The \(state.scenario.piece.lowercased()) ends up \(state.scenario.rel).")
                     .font(.footnote).foregroundStyle(.secondary)
@@ -149,6 +158,7 @@ struct CalculatorView: View {
         .keyboardDoneBar(isFocused: $fieldFocused)
         .onAppear { syncUnits() }
         .onChange(of: appModel.units) { _, _ in
+            convertNumericFields()
             syncUnits()
             resetChoicesForUnit()
         }

@@ -66,3 +66,5 @@ func fracIn(_ mmv: Double) -> String {
 func both(_ mmv: Double) -> String { "\(fmtN(mmv)) mm · \(fracIn(mmv))" }
 
 func toMM(_ v: Double, _ u: UnitSystem) -> Double { u == .imperial ? v * mm2in : v }
+
+func fromMM(_ mm: Double, _ u: UnitSystem) -> Double { u == .imperial ? mm / mm2in : mm }
