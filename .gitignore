@@ -2,3 +2,5 @@ RouterOffsets.xcodeproj/
 .build/
 *.xcuserstate
 DerivedData/
+.DS_Store
+**/.DS_Store
