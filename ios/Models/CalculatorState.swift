@@ -1,11 +1,17 @@
 import SwiftUI
 import Observation
 
+enum CalcMode { case forward, reverse }
+
 @Observable
 final class CalculatorState {
     var scenario: Scenario = .femHole
     var template: Double = 60
     var selectedTab: Int = 0
+
+    var mode: CalcMode = .forward
+    var depth: Double = 0
+    var depthUnit: UnitSystem = .metric
 
     var bushChoice: SizeChoice = .standard(id: "m24")
     var cutterChoice: SizeChoice = .standard(id: "m8")
