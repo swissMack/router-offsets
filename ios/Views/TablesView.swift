@@ -46,6 +46,9 @@ struct TablesView: View {
                 let label = unit == .metric ? "\(fmtN(t)) mm" : fracIn(t)
                 legendChip(color: Self.rankColors[i], text: "\(label) inlay pair")
             }
+            if appModel.kitActive(.bush) || appModel.kitActive(.cutter) {
+                legendChip(color: Color.white.opacity(0.35), text: "Dimmed = not in my kit")
+            }
         }
         .font(.caption)
     }
@@ -87,6 +90,8 @@ struct TablesView: View {
         let o = Offsets.offset(scenario, bush: b.mm, cutter: c.mm)
         let bg = cellColor(scenario, o, impossible: impossible)
         let disp = unit == .metric ? fmtN(o) : fracIn(o).replacingOccurrences(of: "″", with: "")
+        let dimmed = (appModel.kitActive(.bush) && !appModel.kit.contains(b.id))
+            || (appModel.kitActive(.cutter) && !appModel.kit.contains(c.id))
         Button {
             guard !impossible else { return }
             state.bushChoice = .standard(id: b.id)
@@ -98,6 +103,7 @@ struct TablesView: View {
         }
         .buttonStyle(.plain)
         .disabled(impossible)
+        .opacity(dimmed ? 0.32 : 1)
     }
 
     private func cellColor(_ scenario: Scenario, _ o: Double, impossible: Bool) -> Color {

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct CalculatorView: View {
     @Environment(CalculatorState.self) private var state
+    @Environment(AppModel.self) private var appModel
     @FocusState private var fieldFocused: Bool
 
     private var bushMM: Double? { state.bushMM }
@@ -26,7 +27,7 @@ struct CalculatorView: View {
             }
 
             Section("Hardware") {
-                Picker("Guide bush Ø", selection: $state.bushChoice) { sizeOptions(Catalog.bushes) }
+                Picker("Guide bush Ø", selection: $state.bushChoice) { sizeOptions(Catalog.bushes, .bush) }
                     .pickerStyle(.navigationLink)
                 if state.bushChoice == .custom {
                     HStack {
@@ -39,7 +40,7 @@ struct CalculatorView: View {
                     }
                 }
 
-                Picker("Cutter Ø", selection: $state.cutterChoice) { sizeOptions(Catalog.cutters) }
+                Picker("Cutter Ø", selection: $state.cutterChoice) { sizeOptions(Catalog.cutters, .cutter) }
                     .pickerStyle(.navigationLink)
                 if state.cutterChoice == .custom {
                     HStack {
@@ -100,9 +101,15 @@ struct CalculatorView: View {
         .keyboardDoneBar(isFocused: $fieldFocused)
     }
 
-    @ViewBuilder private func sizeOptions(_ sets: [[Size]]) -> some View {
-        Section("Metric")   { ForEach(sets[0]) { Text($0.label).tag(SizeChoice.standard(id: $0.id)) } }
-        Section("Imperial") { ForEach(sets[1]) { Text($0.label).tag(SizeChoice.standard(id: $0.id)) } }
+    @ViewBuilder private func sizeOptions(_ sets: [[Size]], _ category: SizeCategory) -> some View {
+        let metric = sets[0].filter { appModel.isVisible(category, $0) }
+        let imperial = sets[1].filter { appModel.isVisible(category, $0) }
+        if !metric.isEmpty {
+            Section("Metric") { ForEach(metric) { Text($0.label).tag(SizeChoice.standard(id: $0.id)) } }
+        }
+        if !imperial.isEmpty {
+            Section("Imperial") { ForEach(imperial) { Text($0.label).tag(SizeChoice.standard(id: $0.id)) } }
+        }
         Text("Custom…").tag(SizeChoice.custom)
     }
 

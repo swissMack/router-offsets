@@ -7,7 +7,19 @@ struct InlayFinderView: View {
     @State private var selectedOffset: Double = 8
     @FocusState private var templateFocused: Bool
 
-    private var pairs: [InlayPairV2] { pairOffsets(appModel.tableUnit) }
+    private var pairs: [InlayPairV2] {
+        let kb = appModel.kitActive(.bush)
+        let kc = appModel.kitActive(.cutter)
+        func inKit(_ s: SizePair) -> Bool {
+            (!kb || appModel.kit.contains(s.bush.id)) && (!kc || appModel.kit.contains(s.cutter.id))
+        }
+        return pairOffsets(appModel.tableUnit).compactMap { p -> InlayPairV2? in
+            let holes = p.holes.filter(inKit)
+            let plugs = p.plugs.filter(inKit)
+            guard !holes.isEmpty, !plugs.isEmpty else { return nil }
+            return InlayPairV2(mm: p.mm, holes: holes, plugs: plugs, count: holes.count + plugs.count)
+        }
+    }
 
     private var pair: InlayPairV2? {
         pairs.first { abs($0.mm - selectedOffset) < 0.001 }
