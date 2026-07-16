@@ -63,22 +63,4 @@ final class CalculatorState {
         depthUnit = s.depthUnit
         mode = s.mode
     }
-
-    func load(scenario: Scenario, bush: Double, cutter: Double) {
-        self.scenario = scenario
-        if let b = Catalog.allBushes.first(where: { $0.mm == bush }) {
-            bushChoice = .standard(id: b.id)
-        } else {
-            bushChoice = .custom
-            bushCustom = bush
-            bushCustomUnit = .metric
-        }
-        if let c = Catalog.allCutters.first(where: { $0.mm == cutter }) {
-            cutterChoice = .standard(id: c.id)
-        } else {
-            cutterChoice = .custom
-            cutterCustom = cutter
-            cutterCustomUnit = .metric
-        }
-    }
 }

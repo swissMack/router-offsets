@@ -96,7 +96,7 @@ struct CalculatorView: View {
                 }
 
                 LabeledContent("Cut depth (optional)") {
-                    TextField("Depth", value: $state.depth, format: .number)
+                    TextField("e.g. 12", value: $state.depth, format: .number)
                         .keyboardType(.decimalPad)
                         .multilineTextAlignment(.trailing)
                         .focused($fieldFocused).selectAllOnEditing()
