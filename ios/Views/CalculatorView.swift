@@ -2,6 +2,7 @@ import SwiftUI
 
 struct CalculatorView: View {
     @Environment(CalculatorState.self) private var state
+    @FocusState private var templateFocused: Bool
 
     private var isImpossible: Bool { Offsets.impossible(bush: state.bush, cutter: state.cutter) }
     private var offset: Double { Offsets.offset(state.scenario, bush: state.bush, cutter: state.cutter) }
@@ -28,6 +29,7 @@ struct CalculatorView: View {
                     TextField("Template", value: $state.template, format: .number)
                         .keyboardType(.decimalPad)
                         .multilineTextAlignment(.trailing)
+                        .focused($templateFocused)
                 }
             }
 
@@ -68,6 +70,8 @@ struct CalculatorView: View {
             }
         }
         .navigationTitle("Calculator")
+        .scrollDismissesKeyboard(.interactively)
+        .keyboardDoneBar(isFocused: $templateFocused)
     }
 }
 

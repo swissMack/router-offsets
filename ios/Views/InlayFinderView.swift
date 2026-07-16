@@ -4,6 +4,7 @@ struct InlayFinderView: View {
     private let pairs = Offsets.inlayPairs()
     @State private var template: Double = 60
     @State private var selectedOffset: Double = 8
+    @FocusState private var templateFocused: Bool
 
     private var pair: InlayPair? { pairs.first { $0.offset == selectedOffset } }
 
@@ -14,6 +15,7 @@ struct InlayFinderView: View {
                     TextField("Template", value: $template, format: .number)
                         .keyboardType(.decimalPad)
                         .multilineTextAlignment(.trailing)
+                        .focused($templateFocused)
                 }
                 Picker("Target offset", selection: $selectedOffset) {
                     ForEach(pairs) { Text("\(Offsets.fmt($0.offset)) mm").tag($0.offset) }
@@ -50,6 +52,8 @@ struct InlayFinderView: View {
             }
         }
         .navigationTitle("Inlay Finder")
+        .scrollDismissesKeyboard(.interactively)
+        .keyboardDoneBar(isFocused: $templateFocused)
     }
 
     private func setupTable(_ setups: [Setup]) -> some View {
