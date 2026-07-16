@@ -52,13 +52,31 @@ struct CalculatorView: View {
                     }
                 }
 
-                LabeledContent("Template Ø") {
+                Picker("Mode", selection: $state.mode) {
+                    Text("I have a template → size the result").tag(CalcMode.forward)
+                    Text("I want a result → size the template").tag(CalcMode.reverse)
+                }
+                .pickerStyle(.segmented)
+
+                LabeledContent(state.mode == .forward ? "Template opening / disc Ø" : "Target \(state.scenario.piece.lowercased()) Ø") {
                     HStack {
                         TextField("Template", value: $state.template, format: .number)
                             .keyboardType(.decimalPad)
                             .multilineTextAlignment(.trailing)
                             .focused($fieldFocused).selectAllOnEditing()
                         Picker("", selection: $state.templateUnit) {
+                            Text("mm").tag(UnitSystem.metric); Text("in").tag(UnitSystem.imperial)
+                        }.pickerStyle(.segmented).frame(width: 110)
+                    }
+                }
+
+                LabeledContent("Cut depth (optional)") {
+                    HStack {
+                        TextField("Depth", value: $state.depth, format: .number)
+                            .keyboardType(.decimalPad)
+                            .multilineTextAlignment(.trailing)
+                            .focused($fieldFocused).selectAllOnEditing()
+                        Picker("", selection: $state.depthUnit) {
                             Text("mm").tag(UnitSystem.metric); Text("in").tag(UnitSystem.imperial)
                         }.pickerStyle(.segmented).frame(width: 110)
                     }
@@ -102,16 +120,40 @@ struct CalculatorView: View {
                     Text("offset = \(state.scenario.formula) = (\(fmtN(b)) \(state.scenario.isDiff ? "−" : "+") \(fmtN(c))) / 2 mm")
                         .font(.footnote).foregroundStyle(.secondary)
                     let t = toMM(state.template, state.templateUnit)
-                    let r = state.scenario.resultSize(template: t, offset: o)
                     if t > 0 {
-                        if r > 0 {
-                            Text("\(state.scenario.piece) Ø: \(both(r)) (\(state.scenario.rel))")
-                            Text("\(state.scenario.piece) = \(state.scenario.resultFormula) = \(fmtN(t)) \(state.scenario.sign < 0 ? "−" : "+") 2×\(fmtN(o))")
-                                .font(.footnote).foregroundStyle(.secondary)
-                        } else {
-                            Text("Template too small — the offset consumes the whole opening.")
-                                .foregroundStyle(.red)
+                        switch state.mode {
+                        case .forward:
+                            let r = state.scenario.resultSize(template: t, offset: o)
+                            if r > 0 {
+                                Text("\(state.scenario.piece) Ø: \(both(r)) (\(state.scenario.rel))")
+                                Text("\(state.scenario.piece) = \(state.scenario.resultFormula) = \(fmtN(t)) \(state.scenario.sign < 0 ? "−" : "+") 2×\(fmtN(o))")
+                                    .font(.footnote).foregroundStyle(.secondary)
+                            } else {
+                                Text("Template too small — the offset consumes the whole opening.")
+                                    .foregroundStyle(.red)
+                            }
+                        case .reverse:
+                            let template = t - Double(state.scenario.sign) * 2 * o
+                            if template > 0 {
+                                Text("Make the template: \(both(template))")
+                                Text("Template = \(state.scenario.piece) \(state.scenario.sign < 0 ? "+" : "−") 2×offset = \(fmtN(t)) \(state.scenario.sign < 0 ? "+" : "−") 2×\(fmtN(o)) mm")
+                                    .font(.footnote).foregroundStyle(.secondary)
+                            } else {
+                                Text("Not achievable — this setup's offset is too large for that target size.")
+                                    .foregroundStyle(.red)
+                            }
                         }
+                    }
+
+                    Text("↳ Corners: internal corners of the cut will have a radius of at least \(both(c / 2)) (cutter radius). Template internal corners tighter than \(both(b / 2)) radius won't be followed by the bush.")
+                        .font(.footnote).foregroundStyle(.secondary)
+
+                    let dep = toMM(state.depth, state.depthUnit)
+                    if dep > 0 {
+                        let per = c / 2
+                        let n = max(1, Int(ceil(dep / per)))
+                        Text("↳ Depth: \(both(dep)) deep with a \(both(c)) cutter → \(n) pass\(n > 1 ? "es" : "") of \(both(dep / Double(n))) (rule of thumb: ≤ half the cutter Ø per pass in hardwood).")
+                            .font(.footnote).foregroundStyle(.secondary)
                     }
                 }
             }
