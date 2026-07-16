@@ -75,7 +75,7 @@ enum Offsets {
     /// Integer values print without a decimal; others print up to 2 dp with trailing zeros trimmed.
     static func fmt(_ n: Double) -> String {
         if n == n.rounded() { return String(Int(n)) }
-        var s = String(format: "%.2f", n)
+        var s = String(format: "%.2f", locale: Locale(identifier: "en_US_POSIX"), n)
         while s.hasSuffix("0") { s.removeLast() }
         if s.hasSuffix(".") { s.removeLast() }
         return s
