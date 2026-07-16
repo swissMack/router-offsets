@@ -46,6 +46,8 @@ struct InlayFinderView: View {
                     }
                 }
                 .onChange(of: appModel.tableUnit) { _, _ in syncSelectedOffset() }
+                .onChange(of: appModel.kit) { _, _ in syncSelectedOffset() }
+                .onChange(of: appModel.kitFilterEnabled) { _, _ in syncSelectedOffset() }
                 .onAppear { syncSelectedOffset() }
             } header: {
                 Text("Inlay Pair Finder")
