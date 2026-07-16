@@ -4,6 +4,8 @@ struct CalculatorView: View {
     @Environment(CalculatorState.self) private var state
     @Environment(AppModel.self) private var appModel
     @FocusState private var fieldFocused: Bool
+    @State private var showSaveAlert = false
+    @State private var newSetupName = ""
 
     private var bushMM: Double? { state.bushMM }
     private var cutterMM: Double? { state.cutterMM }
@@ -95,10 +97,60 @@ struct CalculatorView: View {
                 Text("\(state.scenario.name): the guide bush (grey) rides the template edge; the cutter (purple) cuts offset from it. The \(state.scenario.piece.lowercased()) ends up \(state.scenario.rel).")
                     .font(.footnote).foregroundStyle(.secondary)
             }
+
+            Section("Saved setups") {
+                Button {
+                    newSetupName = ""
+                    showSaveAlert = true
+                } label: {
+                    Label("Save this setup", systemImage: "star.fill")
+                }
+
+                if appModel.setups.isEmpty {
+                    Text("No saved setups yet — configure the calculator and tap Save.")
+                        .font(.footnote).foregroundStyle(.secondary)
+                } else {
+                    ForEach(appModel.setups) { setup in
+                        Button {
+                            state.apply(setup)
+                        } label: {
+                            Label("★ \(setup.name)", systemImage: "star.fill")
+                                .labelStyle(.titleOnly)
+                        }
+                        .swipeActions {
+                            Button(role: .destructive) {
+                                appModel.deleteSetup(setup)
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                        }
+                        .contextMenu {
+                            Button(role: .destructive) {
+                                appModel.deleteSetup(setup)
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                        }
+                    }
+                }
+            }
         }
         .navigationTitle("Calculator")
         .scrollDismissesKeyboard(.interactively)
         .keyboardDoneBar(isFocused: $fieldFocused)
+        .alert("Save this setup", isPresented: $showSaveAlert) {
+            TextField("Setup name", text: $newSetupName)
+            Button("Cancel", role: .cancel) {}
+            Button("Save") {
+                let trimmed = newSetupName.trimmingCharacters(in: .whitespacesAndNewlines)
+                if !trimmed.isEmpty {
+                    appModel.addSetup(state.snapshot(name: trimmed))
+                }
+                newSetupName = ""
+            }
+        } message: {
+            Text("Give this setup a name, e.g. “Hinge recess jig”.")
+        }
     }
 
     @ViewBuilder private func sizeOptions(_ sets: [[Size]], _ category: SizeCategory) -> some View {
