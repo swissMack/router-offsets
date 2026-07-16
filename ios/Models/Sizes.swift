@@ -42,7 +42,7 @@ enum Catalog {
 func fmtN(_ n: Double) -> String {
     let r = (n * 100).rounded() / 100
     if r == r.rounded() { return String(Int(r)) }
-    var s = String(format: "%.2f", r)
+    var s = String(format: "%.2f", locale: Locale(identifier: "en_US_POSIX"), r)
     while s.hasSuffix("0") { s.removeLast() }
     if s.hasSuffix(".") { s.removeLast() }
     return s
