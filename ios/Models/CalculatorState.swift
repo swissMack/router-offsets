@@ -1,7 +1,7 @@
 import SwiftUI
 import Observation
 
-enum CalcMode { case forward, reverse }
+enum CalcMode: Codable { case forward, reverse }
 
 @Observable
 final class CalculatorState {
@@ -29,6 +29,39 @@ final class CalculatorState {
         case .standard(let id): return Catalog.size(id: id)?.mm
         case .custom: return custom > 0 ? toMM(custom, unit) : nil
         }
+    }
+
+    func snapshot(name: String) -> SavedSetup {
+        SavedSetup(
+            name: name,
+            scenario: scenario,
+            bushChoice: bushChoice,
+            cutterChoice: cutterChoice,
+            bushCustom: bushCustom,
+            bushCustomUnit: bushCustomUnit,
+            cutterCustom: cutterCustom,
+            cutterCustomUnit: cutterCustomUnit,
+            template: template,
+            templateUnit: templateUnit,
+            depth: depth,
+            depthUnit: depthUnit,
+            mode: mode
+        )
+    }
+
+    func apply(_ s: SavedSetup) {
+        scenario = s.scenario
+        bushChoice = s.bushChoice
+        cutterChoice = s.cutterChoice
+        bushCustom = s.bushCustom
+        bushCustomUnit = s.bushCustomUnit
+        cutterCustom = s.cutterCustom
+        cutterCustomUnit = s.cutterCustomUnit
+        template = s.template
+        templateUnit = s.templateUnit
+        depth = s.depth
+        depthUnit = s.depthUnit
+        mode = s.mode
     }
 
     func load(scenario: Scenario, bush: Double, cutter: Double) {

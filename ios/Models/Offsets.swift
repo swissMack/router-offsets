@@ -1,6 +1,6 @@
 import Foundation
 
-enum Scenario: String, CaseIterable, Identifiable {
+enum Scenario: String, CaseIterable, Identifiable, Codable {
     case femHole, femPlug, maleHole, malePlug
 
     var id: String { rawValue }
@@ -140,4 +140,4 @@ func topPairs(_ unit: UnitSystem) -> [Double] {
         .map { ($0.mm * 10000).rounded() / 10000 }
 }
 
-enum SizeChoice: Hashable { case standard(id: String); case custom }
+enum SizeChoice: Hashable, Codable { case standard(id: String); case custom }
