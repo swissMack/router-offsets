@@ -3,7 +3,6 @@ import SwiftUI
 struct InlayFinderView: View {
     @Environment(AppModel.self) private var appModel
     @State private var template: Double = 60
-    @State private var templateUnit: UnitSystem = .metric
     @State private var selectedOffset: Double = 8
     @FocusState private var templateFocused: Bool
 
@@ -29,16 +28,11 @@ struct InlayFinderView: View {
         Form {
             Section {
                 LabeledContent("Template Ø") {
-                    HStack {
-                        TextField("Template", value: $template, format: .number)
-                            .keyboardType(.decimalPad)
-                            .multilineTextAlignment(.trailing)
-                            .focused($templateFocused)
-                            .selectAllOnEditing()
-                        Picker("", selection: $templateUnit) {
-                            Text("mm").tag(UnitSystem.metric); Text("in").tag(UnitSystem.imperial)
-                        }.pickerStyle(.segmented).frame(width: 110)
-                    }
+                    TextField("Template", value: $template, format: .number)
+                        .keyboardType(.decimalPad)
+                        .multilineTextAlignment(.trailing)
+                        .focused($templateFocused)
+                        .selectAllOnEditing()
                 }
                 Picker("Target offset", selection: $selectedOffset) {
                     ForEach(pairs) { p in
@@ -67,19 +61,23 @@ struct InlayFinderView: View {
         selectedOffset = pairs.first?.mm ?? 8
     }
 
+    private func disp(_ mm: Double) -> String {
+        appModel.units == .metric ? "\(fmtN(mm)) mm" : fracIn(mm)
+    }
+
     @ViewBuilder
     private var resultSection: some View {
         if let pair {
             let o = pair.mm
-            let T = toMM(template, templateUnit)
+            let T = toMM(template, appModel.units)
             let size = T > 2 * o ? T - 2 * o : nil
 
             Section {
                 if let size {
-                    Text("With a \(both(T)) template and a \(both(o)) offset, both hole and plug come out at \(both(size)) — a perfect-fit inlay.")
+                    Text("With a \(disp(T)) template and a \(disp(o)) offset, both hole and plug come out at \(disp(size)) — a perfect-fit inlay.")
                         .font(.headline).foregroundStyle(.tint)
                 } else {
-                    Text("Template must be larger than \(both(2 * o)) for this offset.")
+                    Text("Template must be larger than \(disp(2 * o)) for this offset.")
                         .foregroundStyle(.red)
                 }
             }
