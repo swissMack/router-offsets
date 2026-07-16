@@ -16,6 +16,7 @@ struct InlayFinderView: View {
                         .keyboardType(.decimalPad)
                         .multilineTextAlignment(.trailing)
                         .focused($templateFocused)
+                        .selectAllOnEditing()
                 }
                 Picker("Target offset", selection: $selectedOffset) {
                     ForEach(pairs) { Text("\(Offsets.fmt($0.offset)) mm").tag($0.offset) }

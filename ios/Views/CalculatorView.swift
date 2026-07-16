@@ -30,6 +30,7 @@ struct CalculatorView: View {
                         .keyboardType(.decimalPad)
                         .multilineTextAlignment(.trailing)
                         .focused($templateFocused)
+                        .selectAllOnEditing()
                 }
             }
 
