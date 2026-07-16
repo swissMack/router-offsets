@@ -1,0 +1,4 @@
+RouterOffsets.xcodeproj/
+.build/
+*.xcuserstate
+DerivedData/
