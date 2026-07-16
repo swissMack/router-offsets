@@ -2,14 +2,26 @@ import SwiftUI
 
 struct TablesView: View {
     @Environment(CalculatorState.self) private var state
+    @Environment(AppModel.self) private var appModel
     @AppStorage("highlightInlay") private var highlight = true
 
     private let tableOrder: [Scenario] = [.femHole, .femPlug, .maleHole, .malePlug]
 
+    private static let rankColors: [Color] = [
+        Color(hex: "aecdf7"), Color(hex: "f5c9a2"), Color(hex: "cbb3ec")
+    ]
+
     var body: some View {
+        @Bindable var appModel = appModel
         List {
             Section {
-                Toggle("Highlight inlay pairs (8 / 9 / 10 mm) in female tables", isOn: $highlight)
+                Picker("Units", selection: $appModel.units) {
+                    Text("Metric chart").tag(UnitSystem.metric)
+                    Text("Imperial chart").tag(UnitSystem.imperial)
+                }
+                .pickerStyle(.segmented)
+                Toggle("Highlight inlay offset pairs in the two female-template tables", isOn: $highlight)
+                legend
             }
             ForEach(tableOrder) { scenario in
                 Section(scenario.tableTitle) {
@@ -23,18 +35,49 @@ struct TablesView: View {
         .navigationTitle("Offset Tables")
     }
 
+    private var tops: [Double] { topPairs(appModel.units) }
+
+    @ViewBuilder
+    private var legend: some View {
+        let unit = appModel.units
+        VStack(alignment: .leading, spacing: 4) {
+            legendChip(color: Color(hex: "c9c9c9"), text: "Impossible — cutter too large for the guide bush")
+            ForEach(Array(tops.enumerated()), id: \.offset) { i, t in
+                let label = unit == .metric ? "\(fmtN(t)) mm" : fracIn(t)
+                legendChip(color: Self.rankColors[i], text: "\(label) inlay pair")
+            }
+            if appModel.kitActive(.bush) || appModel.kitActive(.cutter) {
+                legendChip(color: Color.white.opacity(0.35), text: "Dimmed = not in my kit")
+            }
+        }
+        .font(.caption)
+    }
+
+    private func legendChip(color: Color, text: String) -> some View {
+        HStack(spacing: 6) {
+            RoundedRectangle(cornerRadius: 3)
+                .fill(color)
+                .frame(width: 14, height: 14)
+            Text(text)
+        }
+    }
+
     @ViewBuilder
     private func table(for scenario: Scenario) -> some View {
+        let unit = appModel.units
+        let idx = unit == .metric ? 0 : 1
+        let bs = Catalog.bushes[idx]
+        let cs = Catalog.cutters[idx]
         Grid(horizontalSpacing: 1, verticalSpacing: 1) {
             GridRow {
                 cellText("B\\C", bold: true)
-                ForEach(Offsets.cutters, id: \.self) { c in cellText(Offsets.fmt(c), bold: true) }
+                ForEach(cs) { c in cellText(c.label, bold: true) }
             }
-            ForEach(Offsets.bushes, id: \.self) { b in
+            ForEach(bs) { b in
                 GridRow {
-                    cellText(Offsets.fmt(b), bold: true, bg: Color(hex: "dff0f5"))
-                    ForEach(Offsets.cutters, id: \.self) { c in
-                        cell(scenario, b, c)
+                    cellText(b.label, bold: true, bg: Color(hex: "dff0f5"))
+                    ForEach(cs) { c in
+                        cell(scenario, b, c, unit: unit)
                     }
                 }
             }
@@ -42,30 +85,34 @@ struct TablesView: View {
     }
 
     @ViewBuilder
-    private func cell(_ scenario: Scenario, _ b: Double, _ c: Double) -> some View {
-        let impossible = Offsets.impossible(bush: b, cutter: c)
-        let o = Offsets.offset(scenario, bush: b, cutter: c)
+    private func cell(_ scenario: Scenario, _ b: Size, _ c: Size, unit: UnitSystem) -> some View {
+        let impossible = Offsets.impossible(bush: b.mm, cutter: c.mm)
+        let o = Offsets.offset(scenario, bush: b.mm, cutter: c.mm)
         let bg = cellColor(scenario, o, impossible: impossible)
+        let disp = unit == .metric ? fmtN(o) : fracIn(o).replacingOccurrences(of: "″", with: "")
+        let dimmed = (appModel.kitActive(.bush) && !appModel.kit.contains(b.id))
+            || (appModel.kitActive(.cutter) && !appModel.kit.contains(c.id))
         Button {
             guard !impossible else { return }
-            state.load(scenario: scenario, bush: b, cutter: c)
+            state.bushChoice = .standard(id: b.id)
+            state.cutterChoice = .standard(id: c.id)
+            state.scenario = scenario
             state.selectedTab = 0
         } label: {
-            cellText(impossible ? "—" : Offsets.fmt(o), bg: bg)
+            cellText(impossible ? "—" : disp, bg: bg)
         }
         .buttonStyle(.plain)
         .disabled(impossible)
+        .opacity(dimmed ? 0.32 : 1)
     }
 
     private func cellColor(_ scenario: Scenario, _ o: Double, impossible: Bool) -> Color {
         if impossible { return Color(hex: "c9c9c9") }
         let female = (scenario == .femHole || scenario == .femPlug)
         if highlight && female {
-            switch o {
-            case 8:  return Color(hex: "aecdf7")
-            case 9:  return Color(hex: "f5c9a2")
-            case 10: return Color(hex: "cbb3ec")
-            default: break
+            let rounded = (o * 10000).rounded() / 10000
+            if let ix = tops.firstIndex(of: rounded), ix < Self.rankColors.count {
+                return Self.rankColors[ix]
             }
         }
         return Color(.secondarySystemGroupedBackground)

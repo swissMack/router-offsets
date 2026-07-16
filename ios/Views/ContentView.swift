@@ -15,9 +15,12 @@ struct ContentView: View {
             NavigationStack { InlayFinderView() }
                 .tabItem { Label("Inlay", systemImage: "square.on.square") }
                 .tag(2)
+            NavigationStack { KitView() }
+                .tabItem { Label("Kit", systemImage: "hammer") }
+                .tag(3)
             NavigationStack { MathsView() }
                 .tabItem { Label("Maths", systemImage: "function") }
-                .tag(3)
+                .tag(4)
         }
     }
 }

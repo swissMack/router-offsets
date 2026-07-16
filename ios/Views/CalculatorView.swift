@@ -2,11 +2,58 @@ import SwiftUI
 
 struct CalculatorView: View {
     @Environment(CalculatorState.self) private var state
-    @FocusState private var templateFocused: Bool
+    @Environment(AppModel.self) private var appModel
+    @FocusState private var fieldFocused: Bool
+    @State private var showSaveAlert = false
+    @State private var newSetupName = ""
 
-    private var isImpossible: Bool { Offsets.impossible(bush: state.bush, cutter: state.cutter) }
-    private var offset: Double { Offsets.offset(state.scenario, bush: state.bush, cutter: state.cutter) }
-    private var result: Double { state.scenario.resultSize(template: state.template, offset: offset) }
+    private var bushMM: Double? { state.bushMM }
+    private var cutterMM: Double? { state.cutterMM }
+    private var isImpossible: Bool {
+        guard let b = bushMM, let c = cutterMM else { return false }
+        return Offsets.impossible(bush: b, cutter: c)
+    }
+    private var offset: Double? {
+        guard let b = bushMM, let c = cutterMM, !isImpossible else { return nil }
+        return Offsets.offset(state.scenario, bush: b, cutter: c)
+    }
+
+    private func disp(_ mm: Double) -> String {
+        appModel.units == .metric ? "\(fmtN(mm)) mm" : fracIn(mm)
+    }
+
+    private func convertNumericFields() {
+        let u = appModel.units
+        state.template   = round2(fromMM(toMM(state.template,   state.templateUnit),    u))
+        state.depth      = round2(fromMM(toMM(state.depth,      state.depthUnit),        u))
+        state.bushCustom = round2(fromMM(toMM(state.bushCustom, state.bushCustomUnit),   u))
+        state.cutterCustom = round2(fromMM(toMM(state.cutterCustom, state.cutterCustomUnit), u))
+    }
+    private func round2(_ v: Double) -> Double { (v * 100).rounded() / 100 }
+
+    private func syncUnits() {
+        state.templateUnit = appModel.units
+        state.depthUnit = appModel.units
+        state.bushCustomUnit = appModel.units
+        state.cutterCustomUnit = appModel.units
+    }
+
+    private func resetChoicesForUnit() {
+        let u = appModel.units
+        if !choiceMatchesUnit(state.bushChoice, u) {
+            state.bushChoice = .standard(id: u == .metric ? "m24" : "i3-4")
+        }
+        if !choiceMatchesUnit(state.cutterChoice, u) {
+            state.cutterChoice = .standard(id: u == .metric ? "m8" : "i5-16")
+        }
+    }
+
+    private func choiceMatchesUnit(_ choice: SizeChoice, _ u: UnitSystem) -> Bool {
+        switch choice {
+        case .standard(let id): return Catalog.size(id: id)?.system == u
+        case .custom:           return true   // custom value is entered in the active unit; keep it
+        }
+    }
 
     var body: some View {
         @Bindable var state = state
@@ -19,60 +66,178 @@ struct CalculatorView: View {
             }
 
             Section("Hardware") {
-                Picker("Guide bush Ø", selection: $state.bush) {
-                    ForEach(Offsets.bushes, id: \.self) { Text("\(Offsets.fmt($0)) mm").tag($0) }
+                Picker("Guide bush Ø", selection: $state.bushChoice) { sizeOptions(Catalog.bushes, .bush) }
+                    .pickerStyle(.navigationLink)
+                if state.bushChoice == .custom {
+                    TextField("Custom Ø", value: $state.bushCustom, format: .number)
+                        .keyboardType(.decimalPad).multilineTextAlignment(.trailing)
+                        .focused($fieldFocused).selectAllOnEditing()
                 }
-                Picker("Cutter Ø", selection: $state.cutter) {
-                    ForEach(Offsets.cutters, id: \.self) { Text("\(Offsets.fmt($0)) mm").tag($0) }
+
+                Picker("Cutter Ø", selection: $state.cutterChoice) { sizeOptions(Catalog.cutters, .cutter) }
+                    .pickerStyle(.navigationLink)
+                if state.cutterChoice == .custom {
+                    TextField("Custom Ø", value: $state.cutterCustom, format: .number)
+                        .keyboardType(.decimalPad).multilineTextAlignment(.trailing)
+                        .focused($fieldFocused).selectAllOnEditing()
                 }
-                LabeledContent("Template Ø (mm)") {
+
+                Picker("Mode", selection: $state.mode) {
+                    Text("I have a template → size the result").tag(CalcMode.forward)
+                    Text("I want a result → size the template").tag(CalcMode.reverse)
+                }
+                .pickerStyle(.segmented)
+
+                LabeledContent(state.mode == .forward ? "Template opening / disc Ø" : "Target \(state.scenario.piece.lowercased()) Ø") {
                     TextField("Template", value: $state.template, format: .number)
                         .keyboardType(.decimalPad)
                         .multilineTextAlignment(.trailing)
-                        .focused($templateFocused)
-                        .selectAllOnEditing()
+                        .focused($fieldFocused).selectAllOnEditing()
+                }
+
+                LabeledContent("Cut depth (optional)") {
+                    TextField("Depth", value: $state.depth, format: .number)
+                        .keyboardType(.decimalPad)
+                        .multilineTextAlignment(.trailing)
+                        .focused($fieldFocused).selectAllOnEditing()
                 }
             }
 
             Section("Result") {
-                if isImpossible {
-                    Label("Impossible — a \(Offsets.fmt(state.cutter)) mm cutter cannot pass a \(Offsets.fmt(state.bush)) mm guide bush.",
-                          systemImage: "exclamationmark.triangle.fill")
-                        .foregroundStyle(.red)
+                resultContent
+            }
+
+            Section("Cross-section") {
+                DiagramView(scenario: state.scenario, bush: bushMM ?? 20, cutter: cutterMM ?? 8,
+                            offset: isImpossible ? nil : offset, unit: appModel.units)
+                    .padding(.vertical, 4)
+                Text("\(state.scenario.name): the guide bush (grey) rides the template edge; the cutter (purple) cuts offset from it. The \(state.scenario.piece.lowercased()) ends up \(state.scenario.rel).")
+                    .font(.footnote).foregroundStyle(.secondary)
+            }
+
+            Section("Saved setups") {
+                Button {
+                    newSetupName = ""
+                    showSaveAlert = true
+                } label: {
+                    Label("Save this setup", systemImage: "star.fill")
+                }
+
+                if appModel.setups.isEmpty {
+                    Text("No saved setups yet — configure the calculator and tap Save.")
+                        .font(.footnote).foregroundStyle(.secondary)
                 } else {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Offset: \(Offsets.fmt(offset)) mm")
-                            .font(.title).bold()
-                            .foregroundStyle(.tint)
-                        Text("offset = \(state.scenario.formula) = (\(Offsets.fmt(state.bush)) \(state.scenario.isDiff ? "−" : "+") \(Offsets.fmt(state.cutter))) / 2")
-                            .font(.footnote).foregroundStyle(.secondary)
-                        if state.template > 0 {
-                            if result > 0 {
-                                Text("\(state.scenario.piece) Ø: \(Offsets.fmt(result)) mm (\(state.scenario.piece.lowercased()) is \(state.scenario.rel))")
-                                Text("\(state.scenario.piece) = \(state.scenario.resultFormula) = \(Offsets.fmt(state.template)) \(state.scenario.sign < 0 ? "−" : "+") 2×\(Offsets.fmt(offset))")
-                                    .font(.footnote).foregroundStyle(.secondary)
-                            } else {
-                                Text("Template too small — the offset consumes the whole opening.")
-                                    .foregroundStyle(.red)
+                    ForEach(appModel.setups) { setup in
+                        Button {
+                            appModel.units = setup.templateUnit
+                            state.apply(setup)
+                        } label: {
+                            Label("★ \(setup.name)", systemImage: "star.fill")
+                                .labelStyle(.titleOnly)
+                        }
+                        .swipeActions {
+                            Button(role: .destructive) {
+                                appModel.deleteSetup(setup)
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                        }
+                        .contextMenu {
+                            Button(role: .destructive) {
+                                appModel.deleteSetup(setup)
+                            } label: {
+                                Label("Delete", systemImage: "trash")
                             }
                         }
                     }
                 }
             }
-
-            Section("Cross-section") {
-                DiagramView(scenario: state.scenario,
-                            bush: state.bush,
-                            cutter: state.cutter,
-                            offset: isImpossible ? nil : offset)
-                    .padding(.vertical, 4)
-                Text("\(state.scenario.name): the guide bush (grey) rides the template edge; the cutter (purple) cuts offset from it. The \(state.scenario.piece.lowercased()) ends up \(state.scenario.rel).")
-                    .font(.footnote).foregroundStyle(.secondary)
-            }
         }
         .navigationTitle("Calculator")
         .scrollDismissesKeyboard(.interactively)
-        .keyboardDoneBar(isFocused: $templateFocused)
+        .keyboardDoneBar(isFocused: $fieldFocused)
+        .onAppear { syncUnits() }
+        .onChange(of: appModel.units) { _, _ in
+            convertNumericFields()
+            syncUnits()
+            resetChoicesForUnit()
+        }
+        .alert("Save this setup", isPresented: $showSaveAlert) {
+            TextField("Setup name", text: $newSetupName)
+            Button("Cancel", role: .cancel) {}
+            Button("Save") {
+                let trimmed = newSetupName.trimmingCharacters(in: .whitespacesAndNewlines)
+                if !trimmed.isEmpty {
+                    appModel.addSetup(state.snapshot(name: trimmed))
+                }
+                newSetupName = ""
+            }
+        } message: {
+            Text("Give this setup a name, e.g. “Hinge recess jig”.")
+        }
+    }
+
+    @ViewBuilder private func sizeOptions(_ sets: [[Size]], _ category: SizeCategory) -> some View {
+        let active = sets[appModel.units == .metric ? 0 : 1].filter { appModel.isVisible(category, $0) }
+        ForEach(active) { Text($0.label).tag(SizeChoice.standard(id: $0.id)) }
+        Text("Custom…").tag(SizeChoice.custom)
+    }
+
+    @ViewBuilder private var resultContent: some View {
+        if let b = bushMM, let c = cutterMM {
+            if isImpossible {
+                Label("Impossible — a \(disp(c)) cutter cannot pass a \(disp(b)) guide bush.",
+                      systemImage: "exclamationmark.triangle.fill")
+                    .foregroundStyle(.red)
+            } else if let o = offset {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Offset: \(disp(o))")
+                        .font(.title).bold()
+                        .foregroundStyle(.tint)
+                    Text("offset = \(state.scenario.formula) = (\(disp(b)) \(state.scenario.isDiff ? "−" : "+") \(disp(c))) / 2")
+                        .font(.footnote).foregroundStyle(.secondary)
+                    let t = toMM(state.template, state.templateUnit)
+                    if t > 0 {
+                        switch state.mode {
+                        case .forward:
+                            let r = state.scenario.resultSize(template: t, offset: o)
+                            if r > 0 {
+                                Text("\(state.scenario.piece) Ø: \(disp(r)) (\(state.scenario.rel))")
+                                Text("\(state.scenario.piece) = \(state.scenario.resultFormula) = \(disp(t)) \(state.scenario.sign < 0 ? "−" : "+") 2×\(disp(o))")
+                                    .font(.footnote).foregroundStyle(.secondary)
+                            } else {
+                                Text("Template too small — the offset consumes the whole opening.")
+                                    .foregroundStyle(.red)
+                            }
+                        case .reverse:
+                            let template = t - Double(state.scenario.sign) * 2 * o
+                            if template > 0 {
+                                Text("Make the template: \(disp(template))")
+                                Text("Template = \(state.scenario.piece) \(state.scenario.sign < 0 ? "+" : "−") 2×offset = \(disp(t)) \(state.scenario.sign < 0 ? "+" : "−") 2×\(disp(o))")
+                                    .font(.footnote).foregroundStyle(.secondary)
+                            } else {
+                                Text("Not achievable — this setup's offset is too large for that target size.")
+                                    .foregroundStyle(.red)
+                            }
+                        }
+                    }
+
+                    Text("↳ Corners: internal corners of the cut will have a radius of at least \(disp(c / 2)) (cutter radius). Template internal corners tighter than \(disp(b / 2)) radius won't be followed by the bush.")
+                        .font(.footnote).foregroundStyle(.secondary)
+
+                    let dep = toMM(state.depth, state.depthUnit)
+                    if dep > 0 {
+                        let per = c / 2
+                        let n = max(1, Int(ceil(dep / per)))
+                        Text("↳ Depth: \(disp(dep)) deep with a \(disp(c)) cutter → \(n) pass\(n > 1 ? "es" : "") of \(disp(dep / Double(n))) (rule of thumb: ≤ half the cutter Ø per pass in hardwood).")
+                            .font(.footnote).foregroundStyle(.secondary)
+                    }
+                }
+            }
+        } else {
+            Text("Enter bush and cutter diameters.")
+                .foregroundStyle(.secondary)
+        }
     }
 }
 

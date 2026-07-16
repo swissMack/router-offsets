@@ -8,6 +8,12 @@ struct MathsView: View {
                 Label("Offset = (Bush − Cutter) / 2 — when the piece you keep is on the same side as the bush (female→hole, male→plug).", systemImage: "1.circle")
                 Label("Offset = (Bush + Cutter) / 2 — when the cutter works beyond the bush footprint (female→plug, male→hole).", systemImage: "2.circle")
             }
+            Section("Corners") {
+                Text("A round cutter can't cut a sharp internal corner — the minimum internal corner radius equals the cutter radius. Likewise the round bush can't follow template corners tighter than the bush radius, so give your templates corner radii of at least half the bush diameter.")
+            }
+            Section("Depth of cut") {
+                Text("Rule of thumb — don't take more than about half the cutter diameter per pass in hardwood (a full diameter in soft material with a sharp cutter). The calculator suggests a pass count when you enter a cut depth.")
+            }
             Section("Worked example") {
                 Text("A 60 mm circular template with an 8 mm offset pair.")
                 Text("Hole: 8 mm cutter + 24 mm bush → (24−8)/2 = 8 → hole Ø = 60 − 2×8 = 44 mm.")

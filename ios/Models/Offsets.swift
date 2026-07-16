@@ -1,6 +1,6 @@
 import Foundation
 
-enum Scenario: String, CaseIterable, Identifiable {
+enum Scenario: String, CaseIterable, Identifiable, Codable {
     case femHole, femPlug, maleHole, malePlug
 
     var id: String { rawValue }
@@ -75,7 +75,7 @@ enum Offsets {
     /// Integer values print without a decimal; others print up to 2 dp with trailing zeros trimmed.
     static func fmt(_ n: Double) -> String {
         if n == n.rounded() { return String(Int(n)) }
-        var s = String(format: "%.2f", n)
+        var s = String(format: "%.2f", locale: Locale(identifier: "en_US_POSIX"), n)
         while s.hasSuffix("0") { s.removeLast() }
         if s.hasSuffix(".") { s.removeLast() }
         return s
@@ -96,3 +96,48 @@ enum Offsets {
             .map { InlayPair(offset: $0, holes: holes[$0]!, plugs: plugs[$0]!) }
     }
 }
+
+enum SizeCategory { case bush, cutter }
+
+struct SizePair: Hashable { let bush: Size; let cutter: Size }
+
+struct InlayPairV2: Identifiable {
+    let mm: Double
+    let holes: [SizePair]
+    let plugs: [SizePair]
+    let count: Int
+    var id: Double { mm }
+}
+
+/// Offsets achievable by BOTH (B−C)/2 and (B+C)/2 within one unit set. Ports index.html:483-493.
+func pairOffsets(_ unit: UnitSystem) -> [InlayPairV2] {
+    let idx = unit == .metric ? 0 : 1
+    let bs = Catalog.bushes[idx], cs = Catalog.cutters[idx]
+    var holes: [String: [SizePair]] = [:]
+    var plugs: [String: [SizePair]] = [:]
+    for b in bs {
+        for c in cs where !Offsets.impossible(bush: b.mm, cutter: c.mm) {
+            let kd = String(format: "%.4f", locale: Locale(identifier: "en_US_POSIX"), (b.mm - c.mm) / 2)
+            let ks = String(format: "%.4f", locale: Locale(identifier: "en_US_POSIX"), (b.mm + c.mm) / 2)
+            holes[kd, default: []].append(SizePair(bush: b, cutter: c))
+            plugs[ks, default: []].append(SizePair(bush: b, cutter: c))
+        }
+    }
+    return holes.keys
+        .filter { plugs[$0] != nil }
+        .map { key in
+            InlayPairV2(mm: Double(key)!, holes: holes[key]!, plugs: plugs[key]!,
+                        count: holes[key]!.count + plugs[key]!.count)
+        }
+        .sorted { $0.mm < $1.mm }
+}
+
+/// The 3 highest-count pair offsets (the highlight colours). Ports index.html:494-496.
+func topPairs(_ unit: UnitSystem) -> [Double] {
+    pairOffsets(unit)
+        .sorted { $0.count > $1.count }
+        .prefix(3)
+        .map { ($0.mm * 10000).rounded() / 10000 }
+}
+
+enum SizeChoice: Hashable, Codable { case standard(id: String); case custom }

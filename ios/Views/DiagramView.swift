@@ -5,6 +5,7 @@ struct DiagramView: View {
     let bush: Double
     let cutter: Double
     let offset: Double?
+    let unit: UnitSystem
 
     private let boardW: CGFloat = 460
     private let boardH: CGFloat = 300
@@ -93,7 +94,8 @@ struct DiagramView: View {
             dim.move(to: CGPoint(x: min(ex, keptX), y: 280))
             dim.addLine(to: CGPoint(x: max(ex, keptX), y: 280))
             ctx.stroke(dim, with: .color(red))
-            label(&ctx, "offset \(Offsets.fmt(o)) mm", (ex + keptX) / 2, 296, size: 13, color: red, anchor: .center)
+            let offsetText = unit == .metric ? "offset \(fmtN(o)) mm" : "offset \(fracIn(o))"
+            label(&ctx, offsetText, (ex + keptX) / 2, 296, size: 13, color: red, anchor: .center)
         }
     }
 }
