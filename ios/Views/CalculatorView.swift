@@ -30,12 +30,19 @@ struct CalculatorView: View {
     }
 
     private func resetChoicesForUnit() {
-        if appModel.units == .metric {
-            state.bushChoice = .standard(id: "m24")
-            state.cutterChoice = .standard(id: "m8")
-        } else {
-            state.bushChoice = .standard(id: "i3-4")
-            state.cutterChoice = .standard(id: "i5-16")
+        let u = appModel.units
+        if !choiceMatchesUnit(state.bushChoice, u) {
+            state.bushChoice = .standard(id: u == .metric ? "m24" : "i3-4")
+        }
+        if !choiceMatchesUnit(state.cutterChoice, u) {
+            state.cutterChoice = .standard(id: u == .metric ? "m8" : "i5-16")
+        }
+    }
+
+    private func choiceMatchesUnit(_ choice: SizeChoice, _ u: UnitSystem) -> Bool {
+        switch choice {
+        case .standard(let id): return Catalog.size(id: id)?.system == u
+        case .custom:           return true   // custom value is entered in the active unit; keep it
         }
     }
 
